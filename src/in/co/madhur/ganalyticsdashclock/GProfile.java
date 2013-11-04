@@ -11,6 +11,12 @@ public class GProfile
 		this.Name=Name;
 	}
 	
+	public GProfile()
+	{
+		
+	}
+
+	
 	public String getName()
 	{
 		return Name;
@@ -26,6 +32,12 @@ public class GProfile
 	public void setId(String id)
 	{
 		Id = id;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return Name;
 	}
 
 }

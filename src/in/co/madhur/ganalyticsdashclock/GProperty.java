@@ -16,6 +16,12 @@ public class GProperty
 		this.Name=Name;
 	}
 	
+	public GProperty()
+	{
+		
+	}
+
+	
 	public String getName()
 	{
 		return Name;
@@ -33,14 +39,20 @@ public class GProperty
 		Id = id;
 	}
 
-	List<GProfile> getProfiles()
+	public List<GProfile> getProfiles()
 	{
 		return profiles;
 	}
 
-	void setProfiles(List<GProfile> profiles)
+	public void setProfiles(List<GProfile> profiles)
 	{
 		this.profiles = profiles;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return Name;
 	}
 
 }

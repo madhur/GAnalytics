@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,12 +6,89 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" android:orientation="vertical" >
+    tools:context=".MainActivity" >
 
+    <ProgressBar
+        android:id="@+id/pbHeaderProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" android:visibility="gone" >
+    </ProgressBar>
 
-    <Spinner android:id="@+id/properties_spinner" android:spinnerMode="dropdown" android:layout_height="wrap_content" android:layout_width="match_parent"/>
-    
-    <Spinner android:id="@+id/profiles_spinner" android:spinnerMode="dropdown" android:layout_height="wrap_content" android:layout_width="match_parent"/>
-    
-    <Spinner android:id="@+id/metrics_spinner" android:spinnerMode="dropdown" android:layout_height="wrap_content" android:layout_width="match_parent"/>
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/spinnerslayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"  >
+
+        <TextView
+            android:id="@+id/txtSelectAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txtSelectAccount" android:layout_weight="0" />
+
+        <Spinner
+            android:id="@+id/accounts_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" android:layout_weight="0" />
+        
+ 		<Space
+ 		    android:layout_width="match_parent"
+ 		    android:layout_height="50dp"  />
+
+        <TextView
+            android:id="@+id/txtSelectProperty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txtSelectProperty" android:layout_weight="0" />
+
+        <Spinner
+            android:id="@+id/properties_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" android:layout_weight="0" />
+        
+        <Space
+ 		    android:layout_width="match_parent"
+ 		    android:layout_height="50dp"  />
+        
+
+        <TextView
+            android:id="@+id/txtSelectProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txtSelectProfile" android:layout_weight="0" />
+
+        <Spinner
+            android:id="@+id/profiles_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" android:layout_weight="0" />
+        
+        <Space
+ 		    android:layout_width="match_parent"
+ 		    android:layout_height="50dp"  />
+        
+
+        <TextView
+            android:id="@+id/txtSelectMetric"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txtSelectMetric"  android:layout_weight="0"/>
+
+        <Spinner
+            android:id="@+id/metrics_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog" android:layout_weight="0"/>
+        
+          <Space
+ 		    android:layout_width="match_parent"
+ 		    android:layout_height="50dp"  />
+          
+        
+        <Button android:id="@+id/btnSave" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/txtSave" android:onClick="onClickSave"></Button>
+    </LinearLayout>
+
+</FrameLayout>

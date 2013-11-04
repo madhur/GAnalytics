@@ -1,5 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.Consts.APIOperation;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,9 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class AnalyticsDataService extends Service
@@ -27,11 +32,7 @@ public class AnalyticsDataService extends Service
 	static final int REQUEST_AUTHORIZATION = 2;
 	private IBinder binder = new LocalBinder();
 
-	// public AnalyticsDataService(Analytics analytics_service)
-	// {
-	// this.analytics_service=analytics_service;
-	//
-	// }
+	
 
 	public void showAccounts()
 	{
@@ -98,12 +99,19 @@ public class AnalyticsDataService extends Service
 	private class APIManagementTask extends
 			AsyncTask<APIOperation, Integer, List<GAccount>>
 	{
+		ProgressBar progressbar;
+		LinearLayout spinnerLayout;
 
 		@Override
 		protected void onPreExecute()
 		{
 			super.onPreExecute();
 			App app = (App) getApplication();
+			
+			progressbar=(ProgressBar) AnalyticsDataService.this.extensionActivity.findViewById(R.id.pbHeaderProgress);
+			spinnerLayout=(LinearLayout) AnalyticsDataService.this.extensionActivity.findViewById(R.id.spinnerslayout);
+			progressbar.setVisibility(View.VISIBLE);
+			spinnerLayout.setVisibility(View.GONE);
 
 		}
 
@@ -113,6 +121,9 @@ public class AnalyticsDataService extends Service
 			super.onPostExecute(result);
 			
 			App.getEventBus().post(result);
+			
+			progressbar.setVisibility(View.GONE);
+			spinnerLayout.setVisibility(View.VISIBLE);
 		}
 
 		@Override

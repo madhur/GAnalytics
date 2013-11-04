@@ -15,6 +15,11 @@ public class GAccount
 		this.Name=Name;
 	}
 	
+	public GAccount()
+	{
+		
+	}
+	
 	public String getName()
 	{
 		return Name;
@@ -32,12 +37,12 @@ public class GAccount
 		Id = id;
 	}
 
-	List<GProperty> getProperties()
+	public List<GProperty> getProperties()
 	{
 		return properties;
 	}
 
-	void setProperties(List<GProperty> properties)
+	public void setProperties(List<GProperty> properties)
 	{
 		this.properties = properties;
 	}
@@ -45,7 +50,6 @@ public class GAccount
 	@Override
 	public String toString()
 	{
-		// TODO Auto-generated method stub
 		return Name;
 	}
 	
