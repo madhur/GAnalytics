@@ -9,7 +9,6 @@ import java.util.List;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.model.Accounts;
-import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -30,13 +29,12 @@ public class AnalyticsDataService extends Service
 {
 	public Analytics analytics_service;
 	public MainActivity extensionActivity;
-	private String ProfileId;
 	static final int REQUEST_AUTHORIZATION = 2;
 	private IBinder binder = new LocalBinder();
 	
 	
 
-	public void showAccounts()
+	public void showAccountsAsync()
 	{
 
 		new APIManagementTask().execute(APIOperation.SELECT_ACCOUNT);
@@ -200,34 +198,6 @@ public class AnalyticsDataService extends Service
 
 			return acProfiles;
 
-		}
-
-		private GaData getResults(Analytics analytics, String profileId)
-				throws IOException
-		{
-
-			return analytics.data().ga().get("ga:" + profileId, // Table Id. ga:
-																// + profile id.
-			"today", // Start date.
-			"today", // End date.
-			"ga:visits") // Metrics.
-			.execute();
-		}
-
-		private void printResults(GaData results)
-		{
-			if (results != null && !results.getRows().isEmpty())
-			{
-				Log.v("TAG", "View (Profile) Name: "
-						+ results.getProfileInfo().getProfileName());
-
-				String result = results.getRows().get(0).get(0);
-				Log.v("TAG", "Total Visits: " + result);
-			}
-			else
-			{
-				Log.v("Tag", "No results found");
-			}
 		}
 
 	}

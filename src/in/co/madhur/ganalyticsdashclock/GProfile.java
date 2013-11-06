@@ -17,16 +17,26 @@ public class GProfile extends GType
 	}
 	
 	
-	public static GProfile GetById(ArrayList<GProfile> items, String Id)
+	public static GNewProfile GetById(ArrayList<GNewProfile> items, String Id)
 	{
 		for(int i=0;i<items.size();++i)
 		{
-			if(items.get(i).getId().equals(Id))
+			if(items.get(i).getProfileId().equals(Id))
 				return items.get(i);
 			
 		}
 		
 		return null;
+	}
+	
+	public static int getItemPositionByProfileId(ArrayList<GNewProfile> items, final String id)
+	{
+	    for (int i = 0; i < items.size(); i++)
+	    {
+	        if (((GNewProfile)items.get(i)).getProfileId().equals(id))
+	            return i;
+	    }
+	    return -1;
 	}
 
 }

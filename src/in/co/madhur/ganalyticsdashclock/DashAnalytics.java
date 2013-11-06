@@ -6,6 +6,8 @@ import java.util.List;
 
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -18,7 +20,7 @@ import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.api.services.analytics.model.GaData;
 
-public class DashAnalytics extends DashClockExtension
+public class DashAnalytics extends DashClockExtension implements OnSharedPreferenceChangeListener
 {
 	AppPreferences appPreferences;
 	String ProfileId;
@@ -30,7 +32,7 @@ public class DashAnalytics extends DashClockExtension
 	@Override
 	protected void onUpdateData(int arg0)
 	{
-		Log.v("TAG", String.valueOf(arg0));
+		Log.v("TAG", "Firing update:"+String.valueOf(arg0));
 
 		new APIResultTask().execute(ProfileId);
 	}
@@ -40,6 +42,7 @@ public class DashAnalytics extends DashClockExtension
 	{
 		super.onInitialize(isReconnect);
 		appPreferences = new AppPreferences(this);
+		appPreferences.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
@@ -75,7 +78,6 @@ public class DashAnalytics extends DashClockExtension
 				return analytics_service.data().ga().get("ga:" + params[0], // Table
 																			// Id.
 																			// ga:
-				// + profile id.
 				"today", // Start date.
 				"today", // End date.
 				"ga:visits") // Metrics.
@@ -91,14 +93,15 @@ public class DashAnalytics extends DashClockExtension
 		@Override
 		protected void onPostExecute(GaData results)
 		{
+			Log.d("TAG", "onPostExecute");
 			if (results != null && results.getRows()!=null)
 			{
 				
 				if (!results.getRows().isEmpty())
 				{
+					Log.d("TAG", "Processing result");
+					
 					String profileName = results.getProfileInfo().getProfileName();
-					String selfLink = results.getSelfLink();
-					Log.v("TAG", selfLink);
 					String result = results.getRows().get(0).get(0);
 
 					String selectedProperty = appPreferences.getMetadata(Keys.PROPERTY_NAME);
@@ -106,8 +109,6 @@ public class DashAnalytics extends DashClockExtension
 					String metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
 
 					int metricIdentifier = getResources().getIdentifier(metricKey, "string", DashAnalytics.this.getPackageName());
-					Log.v("TAG", "res:" + String.valueOf(metricIdentifier));
-
 					if (metricIdentifier != 0)
 					{
 
@@ -124,9 +125,23 @@ public class DashAnalytics extends DashClockExtension
 
 					}
 				}
+				else
+					Log.d("TAG", "empty result");
 			}
+			else
+				Log.d("TAG", "empty result");
 		}
 
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+	{
+			if(analytics_service==null)
+				onInitialize(false);
+			
+			onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
+		
 	}
 
 }

@@ -2,6 +2,7 @@ package in.co.madhur.ganalyticsdashclock;
 
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
+import in.co.madhur.ganalyticsdashclock.Consts.APIMetrics;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.google.android.gms.auth.GoogleAuthException;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -28,7 +29,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,13 +36,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends Activity 
@@ -57,6 +53,7 @@ public class MainActivity extends Activity
 	private Analytics analytics_service;
 	AppPreferences appPreferences;
 	ListView listView;
+	Spinner metricsSpinner;
 
 	ArrayList<GNewProfile> acProfiles;
 	ListMultimap<GProperty, GProfile> propertiesMap;
@@ -74,6 +71,31 @@ public class MainActivity extends Activity
 		
 		listView=(ListView) findViewById(R.id.listview);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		metricsSpinner=(Spinner) findViewById(R.id.metrics_spinner);
+		
+		metricsSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+			{
+				GMetric metric=(GMetric) parentView.getItemAtPosition(position);
+				
+				if(metric!=null)
+				{
+					Log.v("App", "Setting metric to" + metric.Name);
+					appPreferences.setMetadata(Keys.METRIC_ID, metric.Id);
+				}
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
+				
+			}
+		});
+		
 		listView.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -83,8 +105,12 @@ public class MainActivity extends Activity
 				
 				MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
 				GNewProfile newProfile=(GNewProfile) myAdapter.getItem(position);
+				GMetric selMetric=(GMetric) metricsSpinner.getSelectedItem();
 				
-				Log.v("TAG", newProfile.getProfileName());
+				if(newProfile!=null)
+				{
+					appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName(), selMetric.Id );
+				}
 				
 			}
 		});
@@ -99,7 +125,6 @@ public class MainActivity extends Activity
 		{
 			credential.setSelectedAccountName(appPreferences.getUserName());
 			analytics_service = getAnalyticsService(credential);
-			Log.v("Tag", "getAnalyticsAccounts");
 			getAnalyticsAccounts();
 		}
 
@@ -117,6 +142,22 @@ public class MainActivity extends Activity
 			UpdateSelectionPreferences();
 		}
 	}
+	
+	@Override
+	protected void onStart()
+	{
+		// TODO Auto-generated method stub
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this); 
+	}
+	
+	@Override
+	protected void onStop()
+	{
+		// TODO Auto-generated method stub
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -133,7 +174,7 @@ public class MainActivity extends Activity
 
 		if (mBound && mService != null && Connection.isConnected(this))
 		{
-			mService.showAccounts();
+			mService.showAccountsAsync();
 			dirty = true;
 		}
 		else
@@ -147,8 +188,14 @@ public class MainActivity extends Activity
 	{
 
 		MyAdapter myAdapter=new MyAdapter(acProfiles, this);
-		//listView.setAdapter(myAdapter);
 		listView.setAdapter(myAdapter);
+		GMetric metrics[] =new GMetric[2];
+		metrics[0]=new GMetric(APIMetrics.TOTAL_VISITS_TODAY, getString(R.string.visits_today));
+		metrics[1]=new GMetric(APIMetrics.TOTAL_VISITS_YESTERDAY, getString(R.string.visits_yesterday));
+		
+		
+		ArrayAdapter metricsAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item, metrics);
+		metricsSpinner.setAdapter(metricsAdapter);
 		
 		
 	}
@@ -162,7 +209,14 @@ public class MainActivity extends Activity
 
 		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId) && !TextUtils.isEmpty(profileId) && !TextUtils.isEmpty(metricId))
 		{
-
+//			MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
+//			GNewProfile selProfile=GProfile.GetById(acProfiles, profileId);
+			int position=GProfile.getItemPositionByProfileId(acProfiles, profileId);
+			if(position!=-1)
+			{
+				
+				listView.setItemChecked(position, true);
+			}
 		}
 			
 	}
@@ -192,7 +246,6 @@ public class MainActivity extends Activity
 			case REQUEST_AUTHORIZATION:
 				if (resultCode == Activity.RESULT_OK)
 				{
-					Log.v("Tag", "Request Authorization");
 					getAnalyticsAccounts();
 				}
 				else
@@ -206,7 +259,6 @@ public class MainActivity extends Activity
 	{
 		Intent i = new Intent();
 		i.setClass(this, AnalyticsDataService.class);
-		Log.v("Tag", "binding service");
 		bindService(i, mConnection, Context.BIND_AUTO_CREATE);
 
 	}
@@ -230,9 +282,6 @@ public class MainActivity extends Activity
 			mBound = true;
 
 			InitAccount();
-			
-			
-
 		}
 
 		@Override
@@ -247,6 +296,7 @@ public class MainActivity extends Activity
 		try
 		{
 			acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
+			
 
 		}
 		catch (JsonParseException e)
@@ -263,7 +313,10 @@ public class MainActivity extends Activity
 		}
 
 		if (acProfiles == null)
-			mService.showAccounts();
+		{
+			dirty=true;
+			mService.showAccountsAsync();
+		}
 		else
 		{
 			UpdateAccounts(acProfiles);
@@ -275,13 +328,15 @@ public class MainActivity extends Activity
 	@Subscribe
 	public void Notify(Intent reason)
 	{
-		Log.v("Tag", "reason");
 
 		startActivityForResult(reason, REQUEST_AUTHORIZATION);
 	}
-
-	public void onClickSave(View v)
+	
+	@Override
+	protected void onPause()
 	{
+		super.onPause();
+		
 		if (acProfiles != null && dirty)
 		{
 			Log.d("TAG", "saving configdata");
@@ -297,11 +352,12 @@ public class MainActivity extends Activity
 		}
 		else
 			Log.d("TAG", "skipping save of configdata");
-
-
-		finish();
-
+		
+		
+		
+		
 	}
+
 
 	@Override
 	protected void onDestroy()

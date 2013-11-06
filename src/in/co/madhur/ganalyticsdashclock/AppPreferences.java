@@ -20,7 +20,7 @@ import android.util.Log;
 public class AppPreferences
 {
 	
-	private SharedPreferences sharedPreferences;
+	public SharedPreferences sharedPreferences;
 	Context context;
 
 	public enum Keys
