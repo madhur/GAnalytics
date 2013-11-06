@@ -1,7 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
-
+import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.AnalyticsScopes;
+import com.google.common.collect.ListMultimap;
 import com.squareup.otto.Subscribe;
 
 import android.accounts.AccountManager;
@@ -33,29 +34,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-public class ExtensionActivity extends Activity implements
-		OnItemSelectedListener
+public class MainActivity extends Activity 
+		
 {
 	static final int REQUEST_ACCOUNT_PICKER = 1;
 	static final int REQUEST_AUTHORIZATION = 2;
 	AnalyticsDataService mService;
-	boolean mBound = false, dirty=false;
+	boolean mBound = false, dirty = false;
 
 	private GoogleAccountCredential credential;
 	private Analytics analytics_service;
 	AppPreferences appPreferences;
+	ListView listView;
 
-	Spinner properties_spinner, profile_spinner, metrics_spinner,
-			accounts_spinner;
+	ArrayList<GNewProfile> acProfiles;
+	ListMultimap<GProperty, GProfile> propertiesMap;
 	
-	ArrayList<GAccount> gAccounts;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -64,18 +69,25 @@ public class ExtensionActivity extends Activity implements
 		List<String> scopes = new ArrayList<String>();
 		appPreferences = new AppPreferences(this);
 
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main2);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		listView=(ListView) findViewById(R.id.listview);
+		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		listView.setOnItemClickListener(new OnItemClickListener()
+		{
 
-		accounts_spinner = (Spinner) findViewById(R.id.accounts_spinner);
-		properties_spinner = (Spinner) findViewById(R.id.properties_spinner);
-		profile_spinner = (Spinner) findViewById(R.id.profiles_spinner);
-		metrics_spinner = (Spinner) findViewById(R.id.metrics_spinner);
-
-		accounts_spinner.setOnItemSelectedListener(this);
-		properties_spinner.setOnItemSelectedListener(this);
-		profile_spinner.setOnItemSelectedListener(this);
-		metrics_spinner.setOnItemSelectedListener(this);
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				
+				MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
+				GNewProfile newProfile=(GNewProfile) myAdapter.getItem(position);
+				
+				Log.v("TAG", newProfile.getProfileName());
+				
+			}
+		});
 
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
@@ -95,57 +107,64 @@ public class ExtensionActivity extends Activity implements
 	}
 
 	@Subscribe
-	public void UpdateUI(ArrayList<GAccount> gAccounts)
+	public void UpdateUI(ArrayList<GNewProfile> acProfiles)
 	{
 
-		if (gAccounts != null)
+		if (acProfiles != null)
 		{
-			this.gAccounts=gAccounts;
-			UpdateAccounts(gAccounts);
-
+			this.acProfiles=acProfiles;
+			UpdateAccounts(acProfiles);
+			UpdateSelectionPreferences();
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		getMenuInflater().inflate(R.menu.main, (android.view.Menu) menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if(item.getItemId()!= R.id.action_refresh)
+		if (item.getItemId() != R.id.action_refresh)
 			return super.onOptionsItemSelected(item);
-		
-		
-		if(mBound && mService!=null && Connection.isConnected(this))
+
+		if (mBound && mService != null && Connection.isConnected(this))
 		{
 			mService.showAccounts();
-			dirty=true;
+			dirty = true;
 		}
 		else
 			Toast.makeText(this, getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
-			
+
 		return true;
 	}
-	
-	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void UpdateAccounts(List<GAccount> gAccounts)
+	private void UpdateAccounts(ArrayList<GNewProfile> acProfiles)
 	{
 
-		ArrayAdapter accountsAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gAccounts);
-		ArrayAdapter propertiesAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gAccounts.get(0).getProperties());
-		ArrayAdapter profilesAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gAccounts.get(0).getProperties().get(0).getProfiles());
-		ArrayAdapter metricsAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item, new GMetrics[]{ new GMetrics("today", this.getString(R.string.visits_today)), new GMetrics("yesterday", this.getString(R.string.visits_yesterday))});
+		MyAdapter myAdapter=new MyAdapter(acProfiles, this);
+		//listView.setAdapter(myAdapter);
+		listView.setAdapter(myAdapter);
 		
-		accounts_spinner.setAdapter(accountsAdapter);
-		properties_spinner.setAdapter(propertiesAdapter);
-		profile_spinner.setAdapter(profilesAdapter);
-		metrics_spinner.setAdapter(metricsAdapter);
+		
+	}
+
+	private void UpdateSelectionPreferences()
+	{
+		String accountId = appPreferences.getMetadata(Keys.ACCOUNT_ID);
+		String propertyId = appPreferences.getMetadata(Keys.PROPERTY_ID);
+		String profileId = appPreferences.getMetadata(Keys.PROFILE_ID);
+		String metricId = appPreferences.getMetadata(Keys.METRIC_ID);
+
+		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId) && !TextUtils.isEmpty(profileId) && !TextUtils.isEmpty(metricId))
+		{
+
+		}
+			
 	}
 
 	@Override
@@ -206,11 +225,12 @@ public class ExtensionActivity extends Activity implements
 		public void onServiceConnected(ComponentName className, IBinder service)
 		{
 			LocalBinder binder = (LocalBinder) service;
-			mService = binder.getService(ExtensionActivity.this);
+			mService = binder.getService(MainActivity.this);
 			mService.analytics_service = analytics_service;
 			mBound = true;
-			
+
 			InitAccount();
+			
 			
 
 		}
@@ -221,14 +241,13 @@ public class ExtensionActivity extends Activity implements
 			mBound = false;
 		}
 	};
-	
-	
+
 	private void InitAccount()
 	{
 		try
 		{
-			gAccounts=(ArrayList<GAccount>) appPreferences.getConfigData();
-			
+			acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
+
 		}
 		catch (JsonParseException e)
 		{
@@ -242,11 +261,15 @@ public class ExtensionActivity extends Activity implements
 		{
 			Log.e("TAG", e.getMessage());
 		}
-		
-		if(gAccounts==null)
+
+		if (acProfiles == null)
 			mService.showAccounts();
 		else
-			UpdateAccounts(gAccounts);
+		{
+			UpdateAccounts(acProfiles);
+			UpdateSelectionPreferences();
+		}
+
 	}
 
 	@Subscribe
@@ -257,45 +280,15 @@ public class ExtensionActivity extends Activity implements
 		startActivityForResult(reason, REQUEST_AUTHORIZATION);
 	}
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-	{
-		switch (parent.getId())
-		{
-			case R.id.accounts_spinner:
-				GAccount selAccount = (GAccount) parent.getSelectedItem();
-				ArrayAdapter propertiesAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, selAccount.getProperties());
-				properties_spinner.setAdapter(propertiesAdapter);
-
-				break;
-
-			case R.id.properties_spinner:
-				GProperty selProperty = (GProperty) parent.getSelectedItem();
-				ArrayAdapter profilesAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, selProperty.getProfiles());
-				profile_spinner.setAdapter(profilesAdapter);
-				break;
-
-			case R.id.profiles_spinner:
-				// save it to preferences
-				break;
-				
-			case R.id.metrics_spinner:
-				
-				break;
-
-		}
-
-	}
-	
 	public void onClickSave(View v)
 	{
-		if(gAccounts!=null && dirty)
+		if (acProfiles != null && dirty)
 		{
 			Log.d("TAG", "saving configdata");
-			
+
 			try
 			{
-				appPreferences.saveConfigData(gAccounts);
+				appPreferences.saveConfigData(acProfiles);
 			}
 			catch (JsonProcessingException e)
 			{
@@ -304,9 +297,10 @@ public class ExtensionActivity extends Activity implements
 		}
 		else
 			Log.d("TAG", "skipping save of configdata");
-		
+
+
 		finish();
-		
+
 	}
 
 	@Override
@@ -322,11 +316,6 @@ public class ExtensionActivity extends Activity implements
 		}
 	}
 
-	@Override
-	public void onNothingSelected(AdapterView<?> parent)
-	{
-		Log.v("TAG", "nothing selected");
 
-	}
 
 }

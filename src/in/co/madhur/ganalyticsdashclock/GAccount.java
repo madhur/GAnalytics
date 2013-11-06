@@ -3,16 +3,13 @@ package in.co.madhur.ganalyticsdashclock;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GAccount
+public class GAccount extends GType
 {
-	private String Id;
-	private String Name;
-	private List<GProperty> properties=new ArrayList<GProperty>();
+	private ArrayList<GProperty> properties=new ArrayList<GProperty>();
 	
 	public GAccount(String Id, String Name)
 	{
-		this.Id=Id;
-		this.Name=Name;
+		super(Id, Name);
 	}
 	
 	public GAccount()
@@ -20,37 +17,28 @@ public class GAccount
 		
 	}
 	
-	public String getName()
-	{
-		return Name;
-	}
-	public void setName(String name)
-	{
-		Name = name;
-	}
-	public String getId()
-	{
-		return Id;
-	}
-	public void setId(String id)
-	{
-		Id = id;
-	}
 
-	public List<GProperty> getProperties()
+	public ArrayList<GProperty> getProperties()
 	{
 		return properties;
 	}
 
-	public void setProperties(List<GProperty> properties)
+	public void setProperties(ArrayList<GProperty> properties)
 	{
 		this.properties = properties;
 	}
 	
-	@Override
-	public String toString()
+	public static GAccount GetById(ArrayList<GAccount> items, String Id)
 	{
-		return Name;
+		for(int i=0;i<items.size();++i)
+		{
+			if(items.get(i).getId().equals(Id))
+				return items.get(i);
+			
+		}
+		
+		return null;
 	}
+
 	
 }

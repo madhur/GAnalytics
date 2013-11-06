@@ -3,56 +3,43 @@ package in.co.madhur.ganalyticsdashclock;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GProperty
+public class GProperty extends GType
 {
 	
-	private String Id;
-	private String Name;
-	private List<GProfile> profiles=new ArrayList<GProfile>();
-	
-	public GProperty(String Id, String Name)
-	{
-		this.Id=Id;
-		this.Name=Name;
-	}
+	private ArrayList<GProfile> profiles=new ArrayList<GProfile>();
 	
 	public GProperty()
 	{
 		
 	}
-
 	
-	public String getName()
+	public GProperty(String Id, String Name)
 	{
-		return Name;
-	}
-	public void setName(String name)
-	{
-		Name = name;
-	}
-	public String getId()
-	{
-		return Id;
-	}
-	public void setId(String id)
-	{
-		Id = id;
+		super(Id, Name);
 	}
 
-	public List<GProfile> getProfiles()
+
+	public ArrayList<GProfile> getProfiles()
 	{
 		return profiles;
 	}
 
-	public void setProfiles(List<GProfile> profiles)
+	public void setProfiles(ArrayList<GProfile> profiles)
 	{
 		this.profiles = profiles;
 	}
 	
-	@Override
-	public String toString()
+	public static GProperty GetById(ArrayList<GProperty> items, String Id)
 	{
-		return Name;
+		for(int i=0;i<items.size();++i)
+		{
+			if(items.get(i).getId().equals(Id))
+				return items.get(i);
+			
+		}
+		
+		return null;
 	}
 
+	
 }

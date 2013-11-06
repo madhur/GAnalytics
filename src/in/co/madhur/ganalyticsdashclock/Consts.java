@@ -6,8 +6,8 @@ public class Consts
 	
 public enum APIMetrics
 {
-	TOTAL_VISITS_TODAY("today"), 
-	TOTA_VISITS_YESTERDAY("yesterday");
+	TOTAL_VISITS_TODAY("visits_today"), 
+	TOTAL_VISITS_YESTERDAY("visits_yesterday");
 	
 	private String key;
 	
@@ -22,8 +22,7 @@ public enum APIMetrics
 	{
 		return key;
 	}
-
-
+	
 };
 
 public enum APIOperation

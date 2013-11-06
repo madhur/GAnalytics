@@ -1,43 +1,32 @@
 package in.co.madhur.ganalyticsdashclock;
 
-public class GProfile
+import java.util.ArrayList;
+
+public class GProfile extends GType
 {
-	private String Id;
-	private String Name;
-	
-	public GProfile(String Id, String Name)
-	{
-		this.Id=Id;
-		this.Name=Name;
-	}
 	
 	public GProfile()
 	{
 		
 	}
+	
 
-	
-	public String getName()
+	public GProfile(String Id, String Name)
 	{
-		return Name;
-	}
-	public void setName(String name)
-	{
-		Name = name;
-	}
-	public String getId()
-	{
-		return Id;
-	}
-	public void setId(String id)
-	{
-		Id = id;
+		super(Id, Name);
 	}
 	
-	@Override
-	public String toString()
+	
+	public static GProfile GetById(ArrayList<GProfile> items, String Id)
 	{
-		return Name;
+		for(int i=0;i<items.size();++i)
+		{
+			if(items.get(i).getId().equals(Id))
+				return items.get(i);
+			
+		}
+		
+		return null;
 	}
 
 }

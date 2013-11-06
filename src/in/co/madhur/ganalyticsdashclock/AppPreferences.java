@@ -1,6 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +28,13 @@ public class AppPreferences
 
 		USER_NAME("pref_user_name"),
 		CONFIGURATION("pref_config"),
+		ACCOUNT_ID("account_id"),
+		ACCOUNT_NAME("account_name"),
+		PROPERTY_ID("property_id"),
+		PROPERTY_NAME("property_name"),
+		PROFILE_ID("profile_id"),
+		PROFILE_NAME("profile_name"),
+		METRIC_ID("metric_id"),
 		AUTH_TOKEN("pref_auth_token");
 
 		public final String key;
@@ -68,7 +76,7 @@ public class AppPreferences
 		editor.commit();
 	}
 	
-	public void saveConfigData(List<GAccount> gAccounts) throws JsonProcessingException
+	public void saveConfigData(ArrayList<GNewProfile> gAccounts) throws JsonProcessingException
 	{
 		String accountsjson, profilesjson, propertiesjson = null;
 		ObjectMapper mapper=new ObjectMapper();
@@ -78,11 +86,11 @@ public class AppPreferences
 		editor.commit();
 	}
 	
-	public List<GAccount> getConfigData() throws JsonParseException, JsonMappingException, IOException
+	public ArrayList<GNewProfile> getConfigData() throws JsonParseException, JsonMappingException, IOException
 	{
 		String json=sharedPreferences.getString(Keys.CONFIGURATION.key, "");
 		ObjectMapper mapper = new ObjectMapper();
-		List<GAccount> gAccounts = mapper.readValue(json, new TypeReference<List<GAccount>>()
+		ArrayList<GNewProfile> gAccounts = mapper.readValue(json, new TypeReference<ArrayList<GNewProfile>>()
 		{
 		});
 				
@@ -90,6 +98,32 @@ public class AppPreferences
 		
 	}
 	
+	public void setMetadata(Keys key, String value)
+	{
+		Editor editor=sharedPreferences.edit();
+		editor.putString(key.key, value);
+		editor.commit();
+	}
+	
+	public void setMetadataMultiple(String accountId, String accountName, String propertyId, String propertyName, String profileId, String profileName, String metricId)
+	{
+		Editor editor=sharedPreferences.edit();
+		editor.putString(Keys.ACCOUNT_ID.key, accountId);
+		editor.putString(Keys.ACCOUNT_NAME.key, accountName);
+		editor.putString(Keys.PROPERTY_ID.key, propertyId);
+		editor.putString(Keys.PROPERTY_NAME.key, propertyName);
+		editor.putString(Keys.PROFILE_ID.key, profileId);
+		editor.putString(Keys.PROFILE_NAME.key, profileName);
+		editor.putString(Keys.METRIC_ID.key, metricId);
+		editor.commit();
+	}
+	
+	public String getMetadata(Keys key)
+	{
+		
+		return sharedPreferences.getString(key.key, "");
+	}
+		
 	public String getUserName()
 	{
 		
