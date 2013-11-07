@@ -125,7 +125,7 @@ public class AnalyticsDataService extends Service
 				if (analytics_service == null)
 				{
 
-					Log.e("Tag", "Analytics service object isn null");
+					Log.e(App.TAG, "Analytics service object isn null");
 					return null;
 				}
 
@@ -139,8 +139,8 @@ public class AnalyticsDataService extends Service
 					Id = accounts.getItems().get(i).getId();
 					accountName=accounts.getItems().get(i).getName();
 					
-					Log.d("Analytics_requests", "account_id: " + Id);
-					Log.d("Analytics_requests", "account_name: "
+					Log.d(App.TAG, "account_id: " + Id);
+					Log.d(App.TAG, "account_name: "
 							+ accounts.getItems().get(i).getName());
 
 					gAccounts.add(new GAccount(Id, accounts.getItems().get(i).getName()));
@@ -152,9 +152,9 @@ public class AnalyticsDataService extends Service
 
 						WebpropertyId = webproperties.getItems().get(j).getId();
 						propertyName=webproperties.getItems().get(j).getName();
-						Log.d("Analytics_requests", "property_id: "
+						Log.d(App.TAG, "property_id: "
 								+ WebpropertyId);
-						Log.d("Analytics_requests", "property_name: "
+						Log.d(App.TAG, "property_name: "
 								+ webproperties.getItems().get(j).getName());
 
 						GProperty gProperty = new GProperty(WebpropertyId, webproperties.getItems().get(j).getName());
@@ -168,9 +168,9 @@ public class AnalyticsDataService extends Service
 							{
 								String Profile_Id = profiles.getItems().get(k).getId();
 								profileName=profiles.getItems().get(k).getName();
-								Log.d("Analytics_requests", "profile_id: "
+								Log.d(App.TAG, "profile_id: "
 										+ Profile_Id);
-								Log.d("Analytics_requests", "profile_id: "
+								Log.d(App.TAG, "profile_id: "
 										+ profiles.getItems().get(k).getName());
 
 								GProfile gProfile = new GProfile(Profile_Id, profiles.getItems().get(k).getName());

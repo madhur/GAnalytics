@@ -8,8 +8,13 @@
 	<string name="txtSelectProperty">Property</string>
 	<string name="txtSelectProfile">Profile</string>
 	<string name="txtSelectMetric">Metric</string>
-	<string name="visits_today">Visits today</string>
-	<string name="visits_yesterday">Visits Yesterday</string>
+	<string name="today">today</string>
+	<string name="yesterday">Yesterday</string>
+	<string name="visits">Visits</string>
+	<string name="visitors">Visitors</string>
+	<string name="newVisits">New visits</string>
+	<string name="visitCount">Visit Count</string>
+		
 	<string name="txtSave">Done</string>
 	<string name="action_refresh">Refresh</string>
 	<string name="network_not_connected">Network connection not available to refresh the account data</string>

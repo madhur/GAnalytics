@@ -3,8 +3,10 @@ package in.co.madhur.ganalyticsdashclock;
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 import in.co.madhur.ganalyticsdashclock.Consts.APIMetrics;
+import in.co.madhur.ganalyticsdashclock.Consts.APIPeriod;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -53,7 +56,7 @@ public class MainActivity extends Activity
 	private Analytics analytics_service;
 	AppPreferences appPreferences;
 	ListView listView;
-	Spinner metricsSpinner;
+	Spinner metricsSpinner, periodSpinner;
 
 	ArrayList<GNewProfile> acProfiles;
 	ListMultimap<GProperty, GProfile> propertiesMap;
@@ -72,6 +75,25 @@ public class MainActivity extends Activity
 		listView=(ListView) findViewById(R.id.listview);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		metricsSpinner=(Spinner) findViewById(R.id.metrics_spinner);
+		periodSpinner=(Spinner) findViewById(R.id.period_spinner);
+		
+		periodSpinner.setOnItemClickListener(new OnItemClickListener()
+		{
+
+			@Override
+			public void onItemClick(AdapterView<?> parentView, View selectedItemView, int position, long id)
+			{
+				GPeriod period=(GPeriod) parentView.getItemAtPosition(position);
+				
+				if(period!=null)
+				{
+					Log.v(App.TAG, "Setting metric to" + period.Name);
+					PersistPreferences(null, null, period);
+				}
+				
+			}
+		});
+		
 		
 		metricsSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
@@ -83,8 +105,8 @@ public class MainActivity extends Activity
 				
 				if(metric!=null)
 				{
-					Log.v("App", "Setting metric to" + metric.Name);
-					appPreferences.setMetadata(Keys.METRIC_ID, metric.Id);
+					Log.v(App.TAG, "Setting metric to" + metric.Name);
+					PersistPreferences(null, metric, null);
 				}
 				
 			}
@@ -105,11 +127,10 @@ public class MainActivity extends Activity
 				
 				MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
 				GNewProfile newProfile=(GNewProfile) myAdapter.getItem(position);
-				GMetric selMetric=(GMetric) metricsSpinner.getSelectedItem();
 				
 				if(newProfile!=null)
 				{
-					appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName(), selMetric.Id );
+					PersistPreferences(newProfile,null, null);
 				}
 				
 			}
@@ -146,7 +167,6 @@ public class MainActivity extends Activity
 	@Override
 	protected void onStart()
 	{
-		// TODO Auto-generated method stub
 		super.onStart();
 		EasyTracker.getInstance(this).activityStart(this); 
 	}
@@ -154,7 +174,6 @@ public class MainActivity extends Activity
 	@Override
 	protected void onStop()
 	{
-		// TODO Auto-generated method stub
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}
@@ -189,15 +208,35 @@ public class MainActivity extends Activity
 
 		MyAdapter myAdapter=new MyAdapter(acProfiles, this);
 		listView.setAdapter(myAdapter);
-		GMetric metrics[] =new GMetric[2];
-		metrics[0]=new GMetric(APIMetrics.TOTAL_VISITS_TODAY, getString(R.string.visits_today));
-		metrics[1]=new GMetric(APIMetrics.TOTAL_VISITS_YESTERDAY, getString(R.string.visits_yesterday));
+		GMetric metrics[] =new GMetric[5];
+		GPeriod period[]=new GPeriod[2];
+		
+		period[0]=new GPeriod(APIPeriod.TODAY, getString(R.string.today));
+		period[1]=new GPeriod(APIPeriod.YESTERDAY, getString(R.string.yesterday));
+		
+		metrics[0]=new GMetric(APIMetrics.NEW_VISITS, getString(R.string.newVisits));
+		metrics[1]=new GMetric(APIMetrics.VISITS, getString(R.string.visits));
+		metrics[2]=new GMetric(APIMetrics.VISITORS, getString(R.string.visitors));
+		metrics[3]=new GMetric(APIMetrics.VISIT_COUNT, getString(R.string.visitCount));
 		
 		
 		ArrayAdapter metricsAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item, metrics);
+		ArrayAdapter periodAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item, period);
 		metricsSpinner.setAdapter(metricsAdapter);
+		periodSpinner.setAdapter(periodAdapter);
 		
 		
+	}
+	
+	private void PersistPreferences(GNewProfile newProfile, GMetric selMetric, GPeriod selPeriod)
+	{
+		if(newProfile!=null)
+			appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName() );
+		
+		if(selPeriod!=null)
+			appPreferences.setMetadata(Keys.PERIOD_ID, selPeriod.Id);
+		if(selMetric!=null)
+			appPreferences.setMetadata(Keys.METRIC_ID, selMetric.Id);
 	}
 
 	private void UpdateSelectionPreferences()
@@ -206,19 +245,37 @@ public class MainActivity extends Activity
 		String propertyId = appPreferences.getMetadata(Keys.PROPERTY_ID);
 		String profileId = appPreferences.getMetadata(Keys.PROFILE_ID);
 		String metricId = appPreferences.getMetadata(Keys.METRIC_ID);
+		String periodId=appPreferences.getMetadata(Keys.PERIOD_ID);
 
-		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId) && !TextUtils.isEmpty(profileId) && !TextUtils.isEmpty(metricId))
+		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId) && !TextUtils.isEmpty(profileId) && !TextUtils.isEmpty(metricId) && !TextUtils.isEmpty(periodId))
 		{
-//			MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
-//			GNewProfile selProfile=GProfile.GetById(acProfiles, profileId);
 			int position=GProfile.getItemPositionByProfileId(acProfiles, profileId);
 			if(position!=-1)
 			{
 				
 				listView.setItemChecked(position, true);
 			}
+			
+			SelectSpinnerItemByValue(metricsSpinner, metricId);
+			SelectSpinnerItemByValue(periodSpinner, periodId);
+			
+			
 		}
 			
+	}
+	
+	private  void SelectSpinnerItemByValue(Spinner spnr, String value)
+	{
+	    SimpleCursorAdapter adapter = (SimpleCursorAdapter) spnr.getAdapter();
+	    for (int position = 0; position < adapter.getCount(); position++)
+	    {
+	    	GType metric=(GType) adapter.getItem(position);
+	        if(metric.Id.equals(value))
+	        {
+	            spnr.setSelection(position);
+	            return;
+	        }
+	    }
 	}
 
 	@Override
@@ -269,7 +326,6 @@ public class MainActivity extends Activity
 
 	}
 
-	/** Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection()
 	{
 
@@ -301,15 +357,15 @@ public class MainActivity extends Activity
 		}
 		catch (JsonParseException e)
 		{
-			Log.e("TAG", e.getMessage());
+			Log.e(App.TAG, e.getMessage());
 		}
 		catch (JsonMappingException e)
 		{
-			Log.e("TAG", e.getMessage());
+			Log.e(App.TAG, e.getMessage());
 		}
 		catch (IOException e)
 		{
-			Log.e("TAG", e.getMessage());
+			Log.e(App.TAG, e.getMessage());
 		}
 
 		if (acProfiles == null)
@@ -339,7 +395,7 @@ public class MainActivity extends Activity
 		
 		if (acProfiles != null && dirty)
 		{
-			Log.d("TAG", "saving configdata");
+			Log.d(App.TAG, "saving configdata");
 
 			try
 			{
@@ -347,14 +403,11 @@ public class MainActivity extends Activity
 			}
 			catch (JsonProcessingException e)
 			{
-				Log.e("TAG", e.getMessage());
+				Log.e(App.TAG, e.getMessage());
 			}
 		}
 		else
-			Log.d("TAG", "skipping save of configdata");
-		
-		
-		
+			Log.d(App.TAG, "skipping save of configdata");
 		
 	}
 
@@ -371,7 +424,5 @@ public class MainActivity extends Activity
 
 		}
 	}
-
-
 
 }

@@ -35,6 +35,7 @@ public class AppPreferences
 		PROFILE_ID("profile_id"),
 		PROFILE_NAME("profile_name"),
 		METRIC_ID("metric_id"),
+		PERIOD_ID("period_id"),
 		AUTH_TOKEN("pref_auth_token");
 
 		public final String key;
@@ -118,10 +119,28 @@ public class AppPreferences
 		editor.commit();
 	}
 	
+	public void setMetadataMultiple(String accountId, String accountName, String propertyId, String propertyName, String profileId, String profileName)
+	{
+		Editor editor=sharedPreferences.edit();
+		editor.putString(Keys.ACCOUNT_ID.key, accountId);
+		editor.putString(Keys.ACCOUNT_NAME.key, accountName);
+		editor.putString(Keys.PROPERTY_ID.key, propertyId);
+		editor.putString(Keys.PROPERTY_NAME.key, propertyName);
+		editor.putString(Keys.PROFILE_ID.key, profileId);
+		editor.putString(Keys.PROFILE_NAME.key, profileName);
+		editor.commit();
+	}
+	
 	public String getMetadata(Keys key)
 	{
+		String defValue="";
 		
-		return sharedPreferences.getString(key.key, "");
+		if(key==Keys.METRIC_ID)
+			defValue=Defaults.METRIC_ID;
+		else if (key==Keys.PERIOD_ID)
+			defValue=Defaults.PERIOD_ID;
+		
+		return sharedPreferences.getString(key.key, defValue);
 	}
 		
 	public String getUserName()

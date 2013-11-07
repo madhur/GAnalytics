@@ -23,7 +23,7 @@ import com.google.api.services.analytics.model.GaData;
 public class DashAnalytics extends DashClockExtension implements OnSharedPreferenceChangeListener
 {
 	AppPreferences appPreferences;
-	String ProfileId;
+	String ProfileId, metricKey, periodKey;
 	private GoogleAccountCredential credential;
 	private Analytics analytics_service;
 
@@ -32,7 +32,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 	@Override
 	protected void onUpdateData(int arg0)
 	{
-		Log.v("TAG", "Firing update:"+String.valueOf(arg0));
+		Log.v(App.TAG, "Firing update:"+String.valueOf(arg0));
 
 		new APIResultTask().execute(ProfileId);
 	}
@@ -57,7 +57,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		catch (Exception e)
 		{
 
-			Log.e("TAG", e.getMessage());
+			Log.e(App.TAG, e.getMessage());
 		}
 	}
 
@@ -85,7 +85,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 			}
 			catch (IOException e)
 			{
-				Log.e("TAG", e.getMessage());
+				Log.e(App.TAG, e.getMessage());
 			}
 			return null;
 		}
@@ -93,13 +93,13 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		@Override
 		protected void onPostExecute(GaData results)
 		{
-			Log.d("TAG", "onPostExecute");
+			Log.d(App.TAG, "onPostExecute");
 			if (results != null && results.getRows()!=null)
 			{
 				
 				if (!results.getRows().isEmpty())
 				{
-					Log.d("TAG", "Processing result");
+					Log.d(App.TAG, "Processing result");
 					
 					String profileName = results.getProfileInfo().getProfileName();
 					String result = results.getRows().get(0).get(0);
@@ -119,17 +119,17 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 						catch (Exception e)
 						{
 
-							Log.e("TAG", "Exception while published:"
+							Log.e(App.TAG, "Exception while published:"
 									+ e.getMessage());
 						}
 
 					}
 				}
 				else
-					Log.d("TAG", "empty result");
+					Log.d(App.TAG, "empty result");
 			}
 			else
-				Log.d("TAG", "empty result");
+				Log.d(App.TAG, "empty result");
 		}
 
 	}
