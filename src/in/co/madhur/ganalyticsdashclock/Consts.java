@@ -2,6 +2,9 @@ package in.co.madhur.ganalyticsdashclock;
 
 public class Consts
 {
+	
+	public static final String HARDWARE_PHONE="hardware_phone";
+	public static final String LOCATION_WEB_SITE="location_web_site";
 
 	public enum APIPeriod
 	{

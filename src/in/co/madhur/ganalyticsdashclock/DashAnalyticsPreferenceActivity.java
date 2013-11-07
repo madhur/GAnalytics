@@ -28,7 +28,7 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 		super.onCreate(savedInstanceState);
 
 		appPreferences = new AppPreferences(this);
-
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		addPreferencesFromResource(R.xml.preference);
 	}
 

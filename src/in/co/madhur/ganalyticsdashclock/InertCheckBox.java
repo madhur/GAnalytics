@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.CheckBox;
 import android.widget.RadioButton;
 
 public class InertCheckBox extends RadioButton

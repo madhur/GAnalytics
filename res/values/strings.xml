@@ -8,12 +8,12 @@
 	<string name="txtSelectProperty">Property</string>
 	<string name="txtSelectProfile">Profile</string>
 	<string name="txtSelectMetric">Metric</string>
-	<string name="today">today</string>
+	<string name="today">Today</string>
 	<string name="yesterday">Yesterday</string>
 	<string name="visits">Visits</string>
 	<string name="visitors">Visitors</string>
 	<string name="newVisits">New visits</string>
-	<string name="visitCount">Visit Count</string>
+	<string name="percentNewVisits">Percentage New Visits</string>
 		
 	<string name="txtSave">Done</string>
 	<string name="action_refresh">Refresh</string>

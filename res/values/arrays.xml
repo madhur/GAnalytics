@@ -2,8 +2,8 @@
 <resources>
     
     <string-array name="pref_period">
-        <item>Today</item>
-        <item>Yesterday</item>
+        <item>@string/today</item>
+        <item>@string/yesterday</item>
     </string-array>
 
     <string-array name="pref_period_values">
@@ -15,14 +15,14 @@
         <item>visits</item>
         <item>visitors</item>
         <item>newVisits</item>
-        <item>visitCount</item>
+        <item>percentNewVisits</item>
     </string-array>
     
         <string-array name="pref_metric">
-        <item>Visits</item>
-        <item>Visitors</item>
-        <item>New Visits</item>
-        <item>Visit Count</item>
+        <item>@string/visits</item>
+        <item>@string/visitors</item>
+        <item>@string/newVisits</item>
+        <item>@string/percentNewVisits</item>
     </string-array>
     
 

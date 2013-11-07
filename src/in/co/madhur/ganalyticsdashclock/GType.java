@@ -1,7 +1,5 @@
 package in.co.madhur.ganalyticsdashclock;
 
-import java.util.ArrayList;
-
 public class GType
 {
 	

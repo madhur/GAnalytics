@@ -9,6 +9,7 @@ public class GNewProfile
 	private String propertyName;
 	private String profileId;
 	private String profileName;
+	private boolean isApp;
 	
 	public GNewProfile()
 	{
@@ -26,6 +27,18 @@ public class GNewProfile
 		this.profileId= profileId;
 		this.profileName= profileName;
 	}
+	
+	public GNewProfile(String accountId, String accountName, String propertyId, String propertyName, String profileId, String profileName, boolean isApp)
+	{
+		this.accountId=accountId;
+		this.accountName=accountName;
+		this.propertyId=propertyId;
+		this.propertyName=propertyName;
+		this.profileId= profileId;
+		this.profileName= profileName;
+		this.setApp(isApp);
+	}
+
 
 	public String getAccountId()
 	{
@@ -85,6 +98,18 @@ public class GNewProfile
 	public void setProfileName(String profileName)
 	{
 		this.profileName = profileName;
+	}
+
+
+	public boolean isApp()
+	{
+		return isApp;
+	}
+
+
+	public void setApp(boolean isApp)
+	{
+		this.isApp = isApp;
 	}
 
 }

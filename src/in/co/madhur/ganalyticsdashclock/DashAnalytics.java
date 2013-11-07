@@ -1,6 +1,5 @@
 package in.co.madhur.ganalyticsdashclock;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +16,12 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
+import com.google.api.services.analytics.Analytics.Data.Ga.Get;
 import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.api.services.analytics.model.GaData;
 
-public class DashAnalytics extends DashClockExtension implements OnSharedPreferenceChangeListener
+public class DashAnalytics extends DashClockExtension implements
+		OnSharedPreferenceChangeListener
 {
 	AppPreferences appPreferences;
 	String ProfileId, metricKey, periodKey;
@@ -32,11 +33,16 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 	@Override
 	protected void onUpdateData(int arg0)
 	{
-		Log.v(App.TAG, "Firing update:"+String.valueOf(arg0));
+		
+		ProfileId = appPreferences.getMetadata(Keys.PROFILE_ID);
+		metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
+		periodKey = appPreferences.getMetadata(Keys.PERIOD_ID);
+		
+		Log.v(App.TAG, "Firing update:" + String.valueOf(arg0));
 
-		if(Connection.isConnected(this))
+		if (Connection.isConnected(this))
 		{
-		new APIResultTask().execute(ProfileId, metricKey, periodKey);
+			new APIResultTask().execute(ProfileId, metricKey, periodKey);
 		}
 		else
 			Log.d(App.TAG, "No network, postponing update");
@@ -51,10 +57,6 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
-		ProfileId = appPreferences.getMetadata(Keys.PROFILE_ID);
-		metricKey=appPreferences.getMetadata(Keys.METRIC_ID);
-		periodKey=appPreferences.getMetadata(Keys.PERIOD_ID);
-
 		try
 		{
 			credential = GoogleAccountCredential.usingOAuth2(this, scopes);
@@ -64,7 +66,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		catch (Exception e)
 		{
 
-			Log.e(App.TAG,"Exception in onInitialize"+ e.getMessage());
+			Log.e(App.TAG, "Exception in onInitialize" + e.getMessage());
 		}
 	}
 
@@ -82,15 +84,15 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		{
 			try
 			{
-				return analytics_service.data().ga().get("ga:" + params[0], // Table
-				params[2], // Start date.
-				params[2], // End date.
-				"ga:"+params[1]) // Metrics.
-				.execute();
+				Get apiQuery = analytics_service.data().ga().get("ga:"
+						+ params[0], params[2], params[2], "ga:" + params[1]);
+				Log.d(App.TAG, apiQuery.toString());
+
+				return apiQuery.execute();
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
-				Log.e(App.TAG, "Exception in doInBackground"+ e.getMessage());
+				Log.e(App.TAG, "Exception in doInBackground" + e.getMessage());
 			}
 			return null;
 		}
@@ -98,50 +100,49 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		@Override
 		protected void onPostExecute(GaData results)
 		{
+			String profileName = appPreferences.getMetadata(Keys.PROFILE_NAME);
+			String selectedProperty = appPreferences.getMetadata(Keys.PROPERTY_NAME);
+			String metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
+			int metricIdentifier = getResources().getIdentifier(metricKey, "string", DashAnalytics.this.getPackageName());
+			int periodIdentifier = getResources().getIdentifier(periodKey, "string", DashAnalytics.this.getPackageName());
+			String result;
+			
+			Log.d(App.TAG, "Processing result for " + profileName);
+
 			Log.d(App.TAG, "onPostExecute");
-			if (results != null && results.getRows()!=null)
+			if (results != null && results.getRows() != null)
 			{
-				
+
 				if (!results.getRows().isEmpty())
 				{
-					Log.d(App.TAG, "Processing result");
-					
-					String profileName = results.getProfileInfo().getProfileName();
-					String result = results.getRows().get(0).get(0);
 
-					String selectedProperty = appPreferences.getMetadata(Keys.PROPERTY_NAME);
-
-					String metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
-
-					int metricIdentifier = getResources().getIdentifier(metricKey, "string", DashAnalytics.this.getPackageName());
-					int periodIdentifier=getResources().getIdentifier(periodKey, "string", DashAnalytics.this.getPackageName());
-					
-					if (metricIdentifier != 0 && periodIdentifier!=0)
-					{
-
-						try
-						{
-							publishUpdate(new ExtensionData()
-									          .visible(true)
-									          .status(result)
-									          .icon(R.drawable.ic_dashclock)
-									          .expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier),getString(periodIdentifier) , result))
-									          .expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)));
-						}
-						catch (Exception e)
-						{
-
-							Log.e(App.TAG, "Exception while published:"
-									+ e.getMessage());
-						}
-
-					}
+					result = results.getRows().get(0).get(0);
 				}
 				else
+				{
+					result="0";
 					Log.d(App.TAG, "empty result");
+					
+				}
 			}
 			else
+			{
+				result="0";
 				Log.d(App.TAG, "null result");
+			}
+			
+			
+			try
+			{
+				publishUpdate(new ExtensionData().visible(true).status(result).icon(R.drawable.ic_dashclock).expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier), getString(periodIdentifier), result)).expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)));
+			}
+			catch (Exception e)
+			{
+
+				Log.e(App.TAG, "Exception while published:"
+						+ e.getMessage());
+			}
+			
 		}
 
 	}
@@ -149,11 +150,11 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 	{
-			if(analytics_service==null)
-				onInitialize(false);
-			
-			onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
-		
+		if (analytics_service == null)
+			onInitialize(false);
+
+		onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
+
 	}
 
 }

@@ -1,7 +1,6 @@
 package in.co.madhur.ganalyticsdashclock;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GAccount extends GType
 {

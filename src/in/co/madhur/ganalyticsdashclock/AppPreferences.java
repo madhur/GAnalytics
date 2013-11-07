@@ -2,9 +2,6 @@ package in.co.madhur.ganalyticsdashclock;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,7 +12,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class AppPreferences
 {
@@ -79,7 +75,7 @@ public class AppPreferences
 	
 	public void saveConfigData(ArrayList<GNewProfile> gAccounts) throws JsonProcessingException
 	{
-		String accountsjson, profilesjson, propertiesjson = null;
+		String accountsjson;
 		ObjectMapper mapper=new ObjectMapper();
 		accountsjson=mapper.writeValueAsString(gAccounts);
 		SharedPreferences.Editor editor=this.sharedPreferences.edit();

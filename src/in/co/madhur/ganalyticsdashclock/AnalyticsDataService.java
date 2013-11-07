@@ -1,5 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
+
+
 import in.co.madhur.ganalyticsdashclock.Consts.APIOperation;
 
 import java.io.IOException;
@@ -13,7 +15,6 @@ import com.google.api.services.analytics.model.Profiles;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -117,7 +118,7 @@ public class AnalyticsDataService extends Service
 			ListMultimap<GProperty, GProfile> propertiesMap=ArrayListMultimap.create();
 			List<GAccount> gAccounts = new ArrayList<GAccount>();
 
-			
+			boolean isApp;
 			ArrayList<GNewProfile> acProfiles=new ArrayList<GNewProfile>();
 
 			try
@@ -156,6 +157,12 @@ public class AnalyticsDataService extends Service
 								+ WebpropertyId);
 						Log.d(App.TAG, "property_name: "
 								+ webproperties.getItems().get(j).getName());
+						
+						String kind=webproperties.getItems().get(j).getWebsiteUrl();
+						if(kind==null)
+							isApp=true;
+						else 
+							isApp=false;
 
 						GProperty gProperty = new GProperty(WebpropertyId, webproperties.getItems().get(j).getName());
 						gAccounts.get(i).getProperties().add(gProperty);
@@ -168,15 +175,20 @@ public class AnalyticsDataService extends Service
 							{
 								String Profile_Id = profiles.getItems().get(k).getId();
 								profileName=profiles.getItems().get(k).getName();
+								
+								
 								Log.d(App.TAG, "profile_id: "
 										+ Profile_Id);
 								Log.d(App.TAG, "profile_id: "
 										+ profiles.getItems().get(k).getName());
 
 								GProfile gProfile = new GProfile(Profile_Id, profiles.getItems().get(k).getName());
+								
+								
+								
 								gAccounts.get(i).getProperties().get(j).getProfiles().add(gProfile);
 								
-								acProfiles.add(new GNewProfile(Id, accountName, WebpropertyId, propertyName, Profile_Id, profileName));
+								acProfiles.add(new GNewProfile(Id, accountName, WebpropertyId, propertyName, Profile_Id, profileName, isApp));
 								propertiesMap.put(gProperty, gProfile);
 
 							}
