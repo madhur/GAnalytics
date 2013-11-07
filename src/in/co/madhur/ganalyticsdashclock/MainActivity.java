@@ -194,16 +194,29 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getItemId() != R.id.action_refresh)
-			return super.onOptionsItemSelected(item);
-
-		if (mBound && mService != null && Connection.isConnected(this))
+		switch(item.getItemId())
 		{
-			mService.showAccountsAsync();
-			dirty = true;
+			case R.id.action_refresh:
+				if (mBound && mService != null && Connection.isConnected(this))
+				{
+					mService.showAccountsAsync();
+					dirty = true;
+				}
+				else
+					Toast.makeText(this, getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
+				
+				break;
+				
+			case R.id.action_settings:
+				Intent i=new Intent();
+				i.setClass(this, DashAnalyticsPreferenceActivity.class);
+				startActivity(i);
+				break;
+				
+			default:
+				return super.onOptionsItemSelected(item);
+			
 		}
-		else
-			Toast.makeText(this, getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
 
 		return true;
 	}

@@ -22,4 +22,11 @@
 	<string name="extension_description">Display Google Analytics metric on Dashclock widget</string>
 	<string name="title_display_format" formatted="false">%s %s: %s</string>
 	<string name="body_display_format" formatted="false">%s (%s)</string>
+	<string name="dashanalytics_preferences">DashAnalytics Preferences</string>
+	<string name="pref_select_period">Select Period</string>
+	<string name="pref_select_period_desc">Select Period to query for</string>
+	<string name="pref_select_metric">Select Metric</string>
+	<string name="pref_select_metric_desc">Select Metric to be displayed</string>
+	<string name="pref_disp_lastupdatetime">Display Last Update time</string>
+	<string name="pref_disp_lastupdatetime_desc">If Selected, displays the last successful update time</string>
 </resources>
