@@ -8,6 +8,7 @@ import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
@@ -38,10 +39,17 @@ public class DashAnalytics extends DashClockExtension implements
 		metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
 		periodKey = appPreferences.getMetadata(Keys.PERIOD_ID);
 		
-		Log.v(App.TAG, "Firing update:" + String.valueOf(arg0));
+		
+		
+		if(TextUtils.isEmpty(ProfileId))
+		{
+			Log.d(App.TAG, "Account not configured yet");
+			return;
+		}
 
 		if (Connection.isConnected(this))
 		{
+			Log.v(App.TAG, "Firing update:" + String.valueOf(arg0));
 			new APIResultTask().execute(ProfileId, metricKey, periodKey);
 		}
 		else

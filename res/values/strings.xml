@@ -14,7 +14,8 @@
 	<string name="visitors">Visitors</string>
 	<string name="newVisits">New visits</string>
 	<string name="percentNewVisits">Percentage New Visits</string>
-		
+	<string name="gps_missing">Your phone seems to be missing Google Play Services. If it\'s a custom ROM make sure you have installed GApps package</string>
+	
 	<string name="txtSave">Done</string>
 	<string name="action_refresh">Refresh</string>
 	<string name="network_not_connected">Network connection not available to refresh the account data</string>

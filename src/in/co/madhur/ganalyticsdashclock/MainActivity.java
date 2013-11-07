@@ -20,6 +20,7 @@ import com.squareup.otto.Subscribe;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +37,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity 
-		
+public class MainActivity extends Activity
+
 {
 	static final int REQUEST_ACCOUNT_PICKER = 1;
 	static final int REQUEST_AUTHORIZATION = 2;
@@ -51,7 +52,7 @@ public class MainActivity extends Activity
 
 	ArrayList<GNewProfile> acProfiles;
 	ListMultimap<GProperty, GProfile> propertiesMap;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -62,25 +63,25 @@ public class MainActivity extends Activity
 
 		setContentView(R.layout.activity_main2);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		listView=(ListView) findViewById(R.id.listview);
+
+		listView = (ListView) findViewById(R.id.listview);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		
+
 		listView.setOnItemClickListener(new OnItemClickListener()
 		{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				
-				MyAdapter myAdapter=(MyAdapter) listView.getAdapter();
-				GNewProfile newProfile=(GNewProfile) myAdapter.getItem(position);
-				
-				if(newProfile!=null)
+
+				MyAdapter myAdapter = (MyAdapter) listView.getAdapter();
+				GNewProfile newProfile = (GNewProfile) myAdapter.getItem(position);
+
+				if (newProfile != null)
 				{
 					PersistPreferences(newProfile);
 				}
-				
+
 			}
 		});
 
@@ -89,7 +90,20 @@ public class MainActivity extends Activity
 		credential = GoogleAccountCredential.usingOAuth2(this, scopes);
 
 		if (TextUtils.isEmpty(appPreferences.getUserName()))
-			startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+		{
+			try
+			{
+				startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+			}
+			catch (ActivityNotFoundException e)
+			{
+
+				Toast.makeText(this, getString(R.string.gps_missing), Toast.LENGTH_LONG).show();
+
+				return;
+			}
+
+		}
 		else
 		{
 			credential.setSelectedAccountName(appPreferences.getUserName());
@@ -106,19 +120,19 @@ public class MainActivity extends Activity
 
 		if (acProfiles != null)
 		{
-			this.acProfiles=acProfiles;
+			this.acProfiles = acProfiles;
 			UpdateAccounts(acProfiles);
 			UpdateSelectionPreferences();
 		}
 	}
-	
+
 	@Override
 	protected void onStart()
 	{
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this); 
+		EasyTracker.getInstance(this).activityStart(this);
 	}
-	
+
 	@Override
 	protected void onStop()
 	{
@@ -136,28 +150,36 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		switch(item.getItemId())
+		switch (item.getItemId())
 		{
 			case R.id.action_refresh:
-				if (mBound && mService != null && Connection.isConnected(this))
+				if(!mBound || mService==null)
+				{
+					Toast.makeText(this, getString(R.string.gps_missing), Toast.LENGTH_LONG).show();
+
+					return true;
+					
+				}
+				
+				if (Connection.isConnected(this))
 				{
 					mService.showAccountsAsync();
 					dirty = true;
 				}
 				else
 					Toast.makeText(this, getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
-				
+
 				break;
-				
+
 			case R.id.action_settings:
-				Intent i=new Intent();
+				Intent i = new Intent();
 				i.setClass(this, DashAnalyticsPreferenceActivity.class);
 				startActivity(i);
 				break;
-				
+
 			default:
 				return super.onOptionsItemSelected(item);
-			
+
 		}
 
 		return true;
@@ -167,15 +189,15 @@ public class MainActivity extends Activity
 	private void UpdateAccounts(ArrayList<GNewProfile> acProfiles)
 	{
 
-		MyAdapter myAdapter=new MyAdapter(acProfiles, this);
+		MyAdapter myAdapter = new MyAdapter(acProfiles, this);
 		listView.setAdapter(myAdapter);
-		
+
 	}
-	
+
 	private void PersistPreferences(GNewProfile newProfile)
 	{
-		if(newProfile!=null)
-			appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName() );
+		if (newProfile != null)
+			appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName());
 
 	}
 
@@ -185,20 +207,21 @@ public class MainActivity extends Activity
 		String propertyId = appPreferences.getMetadata(Keys.PROPERTY_ID);
 		String profileId = appPreferences.getMetadata(Keys.PROFILE_ID);
 		String metricId = appPreferences.getMetadata(Keys.METRIC_ID);
-		String periodId=appPreferences.getMetadata(Keys.PERIOD_ID);
+		String periodId = appPreferences.getMetadata(Keys.PERIOD_ID);
 
-		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId) && !TextUtils.isEmpty(profileId) && !TextUtils.isEmpty(metricId) && !TextUtils.isEmpty(periodId))
+		if (!TextUtils.isEmpty(accountId) && !TextUtils.isEmpty(propertyId)
+				&& !TextUtils.isEmpty(profileId)
+				&& !TextUtils.isEmpty(metricId) && !TextUtils.isEmpty(periodId))
 		{
-			int position=GProfile.getItemPositionByProfileId(acProfiles, profileId);
-			if(position!=-1)
+			int position = GProfile.getItemPositionByProfileId(acProfiles, profileId);
+			if (position != -1)
 			{
-				
+
 				listView.setItemChecked(position, true);
 			}
-			
+
 		}
 	}
-
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
@@ -274,7 +297,6 @@ public class MainActivity extends Activity
 		try
 		{
 			acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
-			
 
 		}
 		catch (JsonParseException e)
@@ -292,7 +314,7 @@ public class MainActivity extends Activity
 
 		if (acProfiles == null)
 		{
-			dirty=true;
+			dirty = true;
 			mService.showAccountsAsync();
 		}
 		else
@@ -309,12 +331,12 @@ public class MainActivity extends Activity
 
 		startActivityForResult(reason, REQUEST_AUTHORIZATION);
 	}
-	
+
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
-		
+
 		if (acProfiles != null && dirty)
 		{
 			Log.d(App.TAG, "saving configdata");
@@ -330,21 +352,19 @@ public class MainActivity extends Activity
 		}
 		else
 			Log.d(App.TAG, "skipping save of configdata");
-		
-	}
 
+	}
 
 	@Override
 	protected void onDestroy()
 	{
 		super.onDestroy();
 
-		if (mConnection != null)
-		{
-			unbindService(mConnection);
-			mService.extensionActivity = null;
-
-		}
+		 if (mBound)
+		 {
+	            unbindService(mConnection);
+	            mBound = false;
+		 }
 	}
 
 }
