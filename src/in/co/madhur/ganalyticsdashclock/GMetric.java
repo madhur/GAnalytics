@@ -21,4 +21,10 @@ public class GMetric extends GType
 		super(Id.toString(), Name);
 		Log.v("TAG", Id.toString());
 	}
+	
+	@Override
+	public String toString()
+	{
+		return Name;
+	}
 }

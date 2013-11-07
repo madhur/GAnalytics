@@ -19,4 +19,10 @@ public class GPeriod extends GType
 	{
 		super(Id.toString(), Name);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return Name;
+	}
 }

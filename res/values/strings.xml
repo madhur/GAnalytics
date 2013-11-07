@@ -20,6 +20,6 @@
 	<string name="network_not_connected">Network connection not available to refresh the account data</string>
 	<string name="extension_title">DashAnalytics</string>
 	<string name="extension_description">Display Google Analytics metric on Dashclock widget</string>
-	<string name="title_display_format" formatted="false">%s: %s</string>
+	<string name="title_display_format" formatted="false">%s %s: %s</string>
 	<string name="body_display_format" formatted="false">%s (%s)</string>
 </resources>

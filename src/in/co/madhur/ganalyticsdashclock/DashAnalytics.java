@@ -34,7 +34,12 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 	{
 		Log.v(App.TAG, "Firing update:"+String.valueOf(arg0));
 
-		new APIResultTask().execute(ProfileId);
+		if(Connection.isConnected(this))
+		{
+		new APIResultTask().execute(ProfileId, metricKey, periodKey);
+		}
+		else
+			Log.d(App.TAG, "No network, postponing update");
 	}
 
 	@Override
@@ -47,6 +52,8 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
 		ProfileId = appPreferences.getMetadata(Keys.PROFILE_ID);
+		metricKey=appPreferences.getMetadata(Keys.METRIC_ID);
+		periodKey=appPreferences.getMetadata(Keys.PERIOD_ID);
 
 		try
 		{
@@ -57,7 +64,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 		catch (Exception e)
 		{
 
-			Log.e(App.TAG, e.getMessage());
+			Log.e(App.TAG,"Exception in onInitialize"+ e.getMessage());
 		}
 	}
 
@@ -76,16 +83,14 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 			try
 			{
 				return analytics_service.data().ga().get("ga:" + params[0], // Table
-																			// Id.
-																			// ga:
-				"today", // Start date.
-				"today", // End date.
-				"ga:visits") // Metrics.
+				params[2], // Start date.
+				params[2], // End date.
+				"ga:"+params[1]) // Metrics.
 				.execute();
 			}
 			catch (IOException e)
 			{
-				Log.e(App.TAG, e.getMessage());
+				Log.e(App.TAG, "Exception in doInBackground"+ e.getMessage());
 			}
 			return null;
 		}
@@ -109,12 +114,19 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 					String metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
 
 					int metricIdentifier = getResources().getIdentifier(metricKey, "string", DashAnalytics.this.getPackageName());
-					if (metricIdentifier != 0)
+					int periodIdentifier=getResources().getIdentifier(periodKey, "string", DashAnalytics.this.getPackageName());
+					
+					if (metricIdentifier != 0 && periodIdentifier!=0)
 					{
 
 						try
 						{
-							publishUpdate(new ExtensionData().visible(true).status(result).icon(R.drawable.ic_dashclock).expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier), result)).expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)));
+							publishUpdate(new ExtensionData()
+									          .visible(true)
+									          .status(result)
+									          .icon(R.drawable.ic_dashclock)
+									          .expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier),getString(periodIdentifier) , result))
+									          .expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)));
 						}
 						catch (Exception e)
 						{
@@ -129,7 +141,7 @@ public class DashAnalytics extends DashClockExtension implements OnSharedPrefere
 					Log.d(App.TAG, "empty result");
 			}
 			else
-				Log.d(App.TAG, "empty result");
+				Log.d(App.TAG, "null result");
 		}
 
 	}

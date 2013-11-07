@@ -77,11 +77,11 @@ public class MainActivity extends Activity
 		metricsSpinner=(Spinner) findViewById(R.id.metrics_spinner);
 		periodSpinner=(Spinner) findViewById(R.id.period_spinner);
 		
-		periodSpinner.setOnItemClickListener(new OnItemClickListener()
+		periodSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
 			@Override
-			public void onItemClick(AdapterView<?> parentView, View selectedItemView, int position, long id)
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
 			{
 				GPeriod period=(GPeriod) parentView.getItemAtPosition(position);
 				
@@ -90,6 +90,12 @@ public class MainActivity extends Activity
 					Log.v(App.TAG, "Setting metric to" + period.Name);
 					PersistPreferences(null, null, period);
 				}
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
 				
 			}
 		});
@@ -266,15 +272,18 @@ public class MainActivity extends Activity
 	
 	private  void SelectSpinnerItemByValue(Spinner spnr, String value)
 	{
-	    SimpleCursorAdapter adapter = (SimpleCursorAdapter) spnr.getAdapter();
+	    ArrayAdapter adapter = (ArrayAdapter) spnr.getAdapter();
 	    for (int position = 0; position < adapter.getCount(); position++)
 	    {
 	    	GType metric=(GType) adapter.getItem(position);
+	    	if(metric!=null)
+	    	{
 	        if(metric.Id.equals(value))
 	        {
 	            spnr.setSelection(position);
 	            return;
 	        }
+	    	}
 	    }
 	}
 
