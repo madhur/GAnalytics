@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
@@ -18,23 +19,31 @@ import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.common.collect.ListMultimap;
 import com.squareup.otto.Subscribe;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends Activity
@@ -88,11 +97,11 @@ public class MainActivity extends Activity
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
 		credential = GoogleAccountCredential.usingOAuth2(this, scopes);
-
 		if (TextUtils.isEmpty(appPreferences.getUserName()))
 		{
 			try
 			{
+
 				startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
 			}
 			catch (ActivityNotFoundException e)
@@ -106,12 +115,89 @@ public class MainActivity extends Activity
 		}
 		else
 		{
+			setNavigationList(appPreferences.getUserName());
 			credential.setSelectedAccountName(appPreferences.getUserName());
 			analytics_service = getAnalyticsService(credential);
 			getAnalyticsAccounts();
 		}
 
 		App.getEventBus().register(this);
+	}
+
+	private ArrayList<String> getAccountsList()
+	{
+		ArrayList<String> accountList = new ArrayList<String>();
+
+		AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+		Account[] list = manager.getAccounts();
+
+		for (Account account : list)
+		{
+			if (account.type.equalsIgnoreCase("com.google"))
+			{
+				accountList.add(account.name);
+			}
+		}
+
+		return accountList;
+	}
+
+	private void setNavigationList(String accountName)
+	{
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getActionBar().setDisplayShowTitleEnabled(false);
+
+		ArrayList<String> navItems = getAccountsList();
+		navItems.add("Add Account");
+
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), android.R.layout.simple_spinner_item, android.R.id.text1, navItems);
+
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		getActionBar().setListNavigationCallbacks(adapter, new OnNavigationListener()
+		{
+
+			@Override
+			public boolean onNavigationItemSelected(int itemPosition, long itemId)
+			{
+				String selItem=adapter.getItem(itemPosition);
+				
+				if(selItem.equals("Add Account"))
+				{
+					startAddGoogleAccountIntent();
+					return true;
+				}
+
+				if (getAccountsList().size() >= itemPosition)
+				{
+					credential.setSelectedAccountName(getAccountsList().get(itemPosition));
+
+					analytics_service = getAnalyticsService(credential);
+					if (mBound)
+						unbindService(mConnection);
+
+					getAnalyticsAccounts();
+				}
+
+				return true;
+			}
+		});
+
+		if (accountName != null)
+		{
+			int index = navItems.indexOf(accountName);
+			if (index != -1)
+				getActionBar().setSelectedNavigationItem(index);
+			else
+				Log.e(App.TAG, "acount not found");
+		}
+	}
+
+	private void startAddGoogleAccountIntent()
+	{
+		Intent addAccountIntent = new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		addAccountIntent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[] { "com.google" });
+		startActivity(addAccountIntent);
 	}
 
 	@Subscribe
@@ -153,14 +239,14 @@ public class MainActivity extends Activity
 		switch (item.getItemId())
 		{
 			case R.id.action_refresh:
-				if(!mBound || mService==null)
+				if (!mBound || mService == null)
 				{
 					Toast.makeText(this, getString(R.string.gps_missing), Toast.LENGTH_LONG).show();
 
 					return true;
-					
+
 				}
-				
+
 				if (Connection.isConnected(this))
 				{
 					mService.showAccountsAsync();
@@ -236,6 +322,8 @@ public class MainActivity extends Activity
 					if (accountName != null)
 					{
 						appPreferences.setUserName(accountName);
+
+						setNavigationList(accountName);
 
 						credential.setSelectedAccountName(accountName);
 						analytics_service = getAnalyticsService(credential);
@@ -360,11 +448,11 @@ public class MainActivity extends Activity
 	{
 		super.onDestroy();
 
-		 if (mBound)
-		 {
-	            unbindService(mConnection);
-	            mBound = false;
-		 }
+		if (mBound)
+		{
+			unbindService(mConnection);
+			mBound = false;
+		}
 	}
 
 }
