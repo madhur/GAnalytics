@@ -1,14 +1,14 @@
 package in.co.madhur.ganalyticsdashclock;
 
-
-
 import in.co.madhur.ganalyticsdashclock.Consts.APIOperation;
+import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.model.Accounts;
 import com.google.api.services.analytics.model.Profiles;
@@ -21,9 +21,6 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class AnalyticsDataService extends Service
@@ -32,8 +29,6 @@ public class AnalyticsDataService extends Service
 	public MainActivity extensionActivity;
 	static final int REQUEST_AUTHORIZATION = 2;
 	private IBinder binder = new LocalBinder();
-	
-	
 
 	public void showAccountsAsync()
 	{
@@ -72,54 +67,44 @@ public class AnalyticsDataService extends Service
 
 	}
 
-	
-
 	private class APIManagementTask extends
-			AsyncTask<APIOperation, Integer, ArrayList<GNewProfile>>
+			AsyncTask<APIOperation, Integer, AnalyticsAccountResult>
 	{
-		ProgressBar progressbar;
-		LinearLayout spinnerLayout;
-
-		
-		
 		@Override
 		protected void onPreExecute()
 		{
 			super.onPreExecute();
+
 			
-			progressbar=(ProgressBar) AnalyticsDataService.this.extensionActivity.findViewById(R.id.pbHeaderProgress);
-			spinnerLayout=(LinearLayout) AnalyticsDataService.this.extensionActivity.findViewById(R.id.spinnerslayout);
-			progressbar.setVisibility(View.VISIBLE);
-			spinnerLayout.setVisibility(View.GONE);
+			
+			App.getEventBus().post(new AnalyticsAccountResult(API_STATUS.STARTING));
 
 		}
 
 		@Override
-		protected void onPostExecute(ArrayList<GNewProfile> result)
+		protected void onPostExecute(AnalyticsAccountResult result)
 		{
 			super.onPostExecute(result);
-			
+
 			App.getEventBus().post(result);
-			
-			progressbar.setVisibility(View.GONE);
-			spinnerLayout.setVisibility(View.VISIBLE);
+
 		}
 
 		@Override
-		protected ArrayList<GNewProfile> doInBackground(APIOperation... params)
+		protected AnalyticsAccountResult doInBackground(APIOperation... params)
 		{
 			Accounts accounts;
 			int account_num;
 			Profiles profiles;
 			com.google.api.services.analytics.model.Webproperties webproperties;
 			String WebpropertyId;
-			String Id, accountName,propertyName, profileName;
-			
-			ListMultimap<GProperty, GProfile> propertiesMap=ArrayListMultimap.create();
+			String Id, accountName, propertyName, profileName;
+
+			ListMultimap<GProperty, GProfile> propertiesMap = ArrayListMultimap.create();
 			List<GAccount> gAccounts = new ArrayList<GAccount>();
 
 			boolean isApp;
-			ArrayList<GNewProfile> acProfiles=new ArrayList<GNewProfile>();
+			ArrayList<GNewProfile> acProfiles = new ArrayList<GNewProfile>();
 
 			try
 			{
@@ -130,16 +115,36 @@ public class AnalyticsDataService extends Service
 					return null;
 				}
 
-				accounts = analytics_service.management().accounts().list().execute();
-				
+				int size = analytics_service.management().accounts().list().size();
+				if (size < 1)
+				{
+					getString(R.string.no_analytics_account);
+					Log.v(App.TAG, String.valueOf(size));
+					// return new AnalyticsAccountResult(errorMessage);
+				}
+
+				try
+				{
+					accounts = analytics_service.management().accounts().list().execute();
+				}
+				catch (GoogleJsonResponseException e)
+				{
+
+					Log.e(App.TAG, e.getMessage());
+					Log.e(App.TAG, e.getStatusMessage());
+					Log.e(App.TAG, String.valueOf(e.getStatusCode()));
+
+					return new AnalyticsAccountResult(e.getStatusMessage());
+				}
+
 				account_num = accounts.getItems().size();
 
 				for (int i = 0; i < account_num; i++)
 				{
 
 					Id = accounts.getItems().get(i).getId();
-					accountName=accounts.getItems().get(i).getName();
-					
+					accountName = accounts.getItems().get(i).getName();
+
 					Log.d(App.TAG, "account_id: " + Id);
 					Log.d(App.TAG, "account_name: "
 							+ accounts.getItems().get(i).getName());
@@ -152,17 +157,16 @@ public class AnalyticsDataService extends Service
 					{
 
 						WebpropertyId = webproperties.getItems().get(j).getId();
-						propertyName=webproperties.getItems().get(j).getName();
-						Log.d(App.TAG, "property_id: "
-								+ WebpropertyId);
+						propertyName = webproperties.getItems().get(j).getName();
+						Log.d(App.TAG, "property_id: " + WebpropertyId);
 						Log.d(App.TAG, "property_name: "
 								+ webproperties.getItems().get(j).getName());
-						
-						String kind=webproperties.getItems().get(j).getWebsiteUrl();
-						if(kind==null)
-							isApp=true;
-						else 
-							isApp=false;
+
+						String kind = webproperties.getItems().get(j).getWebsiteUrl();
+						if (kind == null)
+							isApp = true;
+						else
+							isApp = false;
 
 						GProperty gProperty = new GProperty(WebpropertyId, webproperties.getItems().get(j).getName());
 						gAccounts.get(i).getProperties().add(gProperty);
@@ -174,20 +178,16 @@ public class AnalyticsDataService extends Service
 							for (int k = 0; k < profiles.getItems().size(); ++k)
 							{
 								String Profile_Id = profiles.getItems().get(k).getId();
-								profileName=profiles.getItems().get(k).getName();
-								
-								
-								Log.d(App.TAG, "profile_id: "
-										+ Profile_Id);
+								profileName = profiles.getItems().get(k).getName();
+
+								Log.d(App.TAG, "profile_id: " + Profile_Id);
 								Log.d(App.TAG, "profile_id: "
 										+ profiles.getItems().get(k).getName());
 
 								GProfile gProfile = new GProfile(Profile_Id, profiles.getItems().get(k).getName());
-								
-								
-								
+
 								gAccounts.get(i).getProperties().get(j).getProfiles().add(gProfile);
-								
+
 								acProfiles.add(new GNewProfile(Id, accountName, WebpropertyId, propertyName, Profile_Id, profileName, isApp));
 								propertiesMap.put(gProperty, gProfile);
 
@@ -208,7 +208,7 @@ public class AnalyticsDataService extends Service
 				e.printStackTrace();
 			}
 
-			return acProfiles;
+			return new AnalyticsAccountResult(acProfiles, true);
 
 		}
 

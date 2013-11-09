@@ -135,7 +135,7 @@ public class DashAnalytics extends DashClockExtension implements
 			}
 			else
 			{
-				result="0";
+				result="-1";
 				Log.d(App.TAG, "null result");
 			}
 			

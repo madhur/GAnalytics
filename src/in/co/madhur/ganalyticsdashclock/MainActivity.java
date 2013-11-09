@@ -2,6 +2,8 @@ package in.co.madhur.ganalyticsdashclock;
 
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
+import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity
@@ -52,7 +57,7 @@ public class MainActivity extends Activity
 	static final int REQUEST_ACCOUNT_PICKER = 1;
 	static final int REQUEST_AUTHORIZATION = 2;
 	AnalyticsDataService mService;
-	boolean mBound = false, dirty = false;
+	boolean mBound = false;
 
 	private GoogleAccountCredential credential;
 	private Analytics analytics_service;
@@ -61,6 +66,8 @@ public class MainActivity extends Activity
 
 	ArrayList<GNewProfile> acProfiles;
 	ListMultimap<GProperty, GProfile> propertiesMap;
+
+	OnNavigationListener listNavigator;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -94,6 +101,18 @@ public class MainActivity extends Activity
 			}
 		});
 
+		// listNavigator = new OnNavigationListener()
+		// {
+		//
+		// @Override
+		// public boolean onNavigationItemSelected(int itemPosition, long
+		// itemId)
+		// {
+		// // TODO Auto-generated method stub
+		// return false;
+		// }
+		// };
+
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
 		credential = GoogleAccountCredential.usingOAuth2(this, scopes);
@@ -116,9 +135,9 @@ public class MainActivity extends Activity
 		else
 		{
 			setNavigationList(appPreferences.getUserName());
-			credential.setSelectedAccountName(appPreferences.getUserName());
-			analytics_service = getAnalyticsService(credential);
-			getAnalyticsAccounts();
+			// credential.setSelectedAccountName(appPreferences.getUserName());
+			// analytics_service = getAnalyticsService(credential);
+			// getAnalyticsAccounts();
 		}
 
 		App.getEventBus().register(this);
@@ -160,9 +179,9 @@ public class MainActivity extends Activity
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId)
 			{
-				String selItem=adapter.getItem(itemPosition);
-				
-				if(selItem.equals("Add Account"))
+				String selItem = adapter.getItem(itemPosition);
+
+				if (selItem.equals("Add Account"))
 				{
 					startAddGoogleAccountIntent();
 					return true;
@@ -170,9 +189,14 @@ public class MainActivity extends Activity
 
 				if (getAccountsList().size() >= itemPosition)
 				{
+					Log.v(App.TAG, "Fetching accounts for:"
+							+ getAccountsList().get(itemPosition));
 					credential.setSelectedAccountName(getAccountsList().get(itemPosition));
 
 					analytics_service = getAnalyticsService(credential);
+					if (analytics_service == null)
+						Log.e(App.TAG, "analytics service is null");
+
 					if (mBound)
 						unbindService(mConnection);
 
@@ -201,15 +225,64 @@ public class MainActivity extends Activity
 	}
 
 	@Subscribe
-	public void UpdateUI(ArrayList<GNewProfile> acProfiles)
+	public void UpdateUI(AnalyticsAccountResult result)
 	{
+		ProgressBar progressbar = (ProgressBar) findViewById(R.id.pbHeaderProgress);
+		LinearLayout spinnerLayout = (LinearLayout) findViewById(R.id.spinnerslayout);
+		TextView statusMessage = (TextView) findViewById(R.id.statusMessage);
 
-		if (acProfiles != null)
+		switch (result.getStatus())
 		{
-			this.acProfiles = acProfiles;
-			UpdateAccounts(acProfiles);
-			UpdateSelectionPreferences();
+			case STARTING:
+				statusMessage.setVisibility(View.GONE);
+				progressbar.setVisibility(View.VISIBLE);
+				spinnerLayout.setVisibility(View.GONE);
+
+				break;
+
+			case FAILURE:
+				statusMessage.setVisibility(View.VISIBLE);
+				progressbar.setVisibility(View.GONE);
+				spinnerLayout.setVisibility(View.GONE);
+				statusMessage.setText(result.getErrorMessage());
+
+				break;
+
+			case SUCCESS:
+
+				statusMessage.setVisibility(View.GONE);
+				progressbar.setVisibility(View.GONE);
+				spinnerLayout.setVisibility(View.VISIBLE);
+
+				if (result.getItems() != null)
+				{
+					this.acProfiles = result.getItems();
+
+					MyAdapter myAdapter = new MyAdapter(acProfiles, this);
+					listView.setAdapter(myAdapter);
+
+					UpdateSelectionPreferences();
+
+					if (result.isPersist())
+					{
+						Log.d(App.TAG, "saving configdata");
+
+						try
+						{
+							appPreferences.saveConfigData(acProfiles);
+						}
+						catch (JsonProcessingException e)
+						{
+							Log.e(App.TAG, e.getMessage());
+						}
+					}
+
+					appPreferences.setUserName(credential.getSelectedAccountName());
+				}
+
+				break;
 		}
+
 	}
 
 	@Override
@@ -250,7 +323,6 @@ public class MainActivity extends Activity
 				if (Connection.isConnected(this))
 				{
 					mService.showAccountsAsync();
-					dirty = true;
 				}
 				else
 					Toast.makeText(this, getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
@@ -271,14 +343,14 @@ public class MainActivity extends Activity
 		return true;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void UpdateAccounts(ArrayList<GNewProfile> acProfiles)
-	{
-
-		MyAdapter myAdapter = new MyAdapter(acProfiles, this);
-		listView.setAdapter(myAdapter);
-
-	}
+	// @SuppressWarnings({ "unchecked", "rawtypes" })
+	// private void UpdateAccounts(ArrayList<GNewProfile> acProfiles)
+	// {
+	//
+	// MyAdapter myAdapter = new MyAdapter(acProfiles, this);
+	// listView.setAdapter(myAdapter);
+	//
+	// }
 
 	private void PersistPreferences(GNewProfile newProfile)
 	{
@@ -382,33 +454,44 @@ public class MainActivity extends Activity
 
 	private void InitAccount()
 	{
-		try
-		{
-			acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
+		int selectedIndex = getActionBar().getSelectedNavigationIndex();
+		String selectedAccount = getAccountsList().get(selectedIndex);
+		Log.v(App.TAG, "Initing accounts for " + selectedAccount);
 
-		}
-		catch (JsonParseException e)
+		if (selectedAccount.equals(appPreferences.getUserName()))
 		{
-			Log.e(App.TAG, e.getMessage());
-		}
-		catch (JsonMappingException e)
-		{
-			Log.e(App.TAG, e.getMessage());
-		}
-		catch (IOException e)
-		{
-			Log.e(App.TAG, e.getMessage());
-		}
+			try
+			{
+				acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
 
-		if (acProfiles == null)
-		{
-			dirty = true;
-			mService.showAccountsAsync();
+			}
+			catch (JsonParseException e)
+			{
+				Log.e(App.TAG, e.getMessage());
+			}
+			catch (JsonMappingException e)
+			{
+				Log.e(App.TAG, e.getMessage());
+			}
+			catch (IOException e)
+			{
+				Log.e(App.TAG, e.getMessage());
+			}
+
+			if (acProfiles == null)
+			{
+				mService.showAccountsAsync();
+			}
+			else
+			{
+				UpdateUI(new AnalyticsAccountResult(acProfiles, false));
+				UpdateSelectionPreferences();
+			}
 		}
 		else
 		{
-			UpdateAccounts(acProfiles);
-			UpdateSelectionPreferences();
+			mService.showAccountsAsync();
+
 		}
 
 	}
@@ -418,29 +501,6 @@ public class MainActivity extends Activity
 	{
 
 		startActivityForResult(reason, REQUEST_AUTHORIZATION);
-	}
-
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-
-		if (acProfiles != null && dirty)
-		{
-			Log.d(App.TAG, "saving configdata");
-
-			try
-			{
-				appPreferences.saveConfigData(acProfiles);
-			}
-			catch (JsonProcessingException e)
-			{
-				Log.e(App.TAG, e.getMessage());
-			}
-		}
-		else
-			Log.d(App.TAG, "skipping save of configdata");
-
 	}
 
 	@Override

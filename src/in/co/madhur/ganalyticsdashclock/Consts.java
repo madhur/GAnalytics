@@ -25,6 +25,12 @@ public class Consts
 		}
 
 	};
+	
+	public enum API_STATUS
+	{
+		STARTING, FAILURE, SUCCESS;
+		
+	}
 
 	public enum APIMetrics
 	{
