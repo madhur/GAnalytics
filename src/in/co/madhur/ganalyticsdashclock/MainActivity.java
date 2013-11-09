@@ -5,8 +5,6 @@ import in.co.madhur.ganalyticsdashclock.API.GProfile;
 import in.co.madhur.ganalyticsdashclock.API.GProperty;
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
-import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
@@ -34,7 +31,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -43,14 +39,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,9 +133,6 @@ public class MainActivity extends Activity
 		else
 		{
 			setNavigationList(appPreferences.getUserName());
-			// credential.setSelectedAccountName(appPreferences.getUserName());
-			// analytics_service = getAnalyticsService(credential);
-			// getAnalyticsAccounts();
 		}
 
 		App.getEventBus().register(this);
@@ -273,7 +264,7 @@ public class MainActivity extends Activity
 
 						try
 						{
-							appPreferences.saveConfigData(acProfiles);
+							appPreferences.saveConfigData(acProfiles, credential.getSelectedAccountName());
 						}
 						catch (JsonProcessingException e)
 						{
@@ -346,15 +337,6 @@ public class MainActivity extends Activity
 
 		return true;
 	}
-
-	// @SuppressWarnings({ "unchecked", "rawtypes" })
-	// private void UpdateAccounts(ArrayList<GNewProfile> acProfiles)
-	// {
-	//
-	// MyAdapter myAdapter = new MyAdapter(acProfiles, this);
-	// listView.setAdapter(myAdapter);
-	//
-	// }
 
 	private void PersistPreferences(GNewProfile newProfile)
 	{
@@ -462,11 +444,11 @@ public class MainActivity extends Activity
 		String selectedAccount = getAccountsList().get(selectedIndex);
 		Log.v(App.TAG, "Initing accounts for " + selectedAccount);
 
-		if (selectedAccount.equals(appPreferences.getUserName()))
-		{
+//		if (selectedAccount.equals(appPreferences.getUserName()))
+//		{
 			try
 			{
-				acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData();
+				acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData(selectedAccount);
 
 			}
 			catch (JsonParseException e)
@@ -491,12 +473,12 @@ public class MainActivity extends Activity
 				UpdateUI(new AnalyticsAccountResult(acProfiles, false));
 				UpdateSelectionPreferences();
 			}
-		}
-		else
-		{
-			mService.showAccountsAsync();
-
-		}
+//		}
+//		else
+//		{
+//			mService.showAccountsAsync();
+//
+//		}
 
 	}
 

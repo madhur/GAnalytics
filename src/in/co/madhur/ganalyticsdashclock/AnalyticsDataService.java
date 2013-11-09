@@ -124,7 +124,6 @@ public class AnalyticsDataService extends Service
 				{
 					getString(R.string.no_analytics_account);
 					Log.v(App.TAG, String.valueOf(size));
-					// return new AnalyticsAccountResult(errorMessage);
 				}
 
 				try
