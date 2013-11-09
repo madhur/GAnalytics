@@ -5,42 +5,38 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" >
 
            <in.co.madhur.ganalyticsdashclock.InertCheckBox
             android:id="@+id/radioselect"
             android:layout_width="wrap_content" android:focusable="false"
-            android:layout_height="wrap_content"
-            android:text="" android:onClick="profileSelected" />
+            android:layout_height="fill_parent"
+            android:text="" android:onClick="profileSelected"  android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true" />
            
      
+              <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+        	android:layout_alignParentTop="true"
+            android:text="Profile" android:layout_toRightOf="@id/radioselect"
+            android:textSize="@dimen/text_size_medium"  />
+              
 
         <TextView
             android:id="@+id/property_name"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            
-            android:ellipsize="end"
-            android:layout_marginLeft="25dp"
             android:text="Header"
-            android:textColor="@color/app_text_main_light_color"
+            android:textColor="@color/app_text_main_light_color" android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" android:layout_above="@id/profile_name" android:layout_alignWithParentIfMissing="true"
             android:textSize="@dimen/text_size_large" android:layout_toRightOf="@id/radioselect" />
 
-<!--         <View -->
-<!--             android:id="@+id/profile_header_line" -->
-<!--             android:layout_width="fill_parent" -->
-<!--             android:layout_height="2.0px" -->
-<!--             android:layout_alignParentBottom="true" -->
-<!--             android:background="@color/app_text_main_light_color" /> -->
         
-         <TextView
-            android:id="@+id/profile_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="50dp"
-            android:text="Profile"
-            android:textSize="@dimen/text_size_medium" android:layout_below="@id/property_name"  />
+      
          
             <ImageView
             android:id="@+id/AccountTypeImage"

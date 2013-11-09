@@ -1,4 +1,4 @@
-package in.co.madhur.ganalyticsdashclock;
+package in.co.madhur.ganalyticsdashclock.API;
 
 import java.util.ArrayList;
 

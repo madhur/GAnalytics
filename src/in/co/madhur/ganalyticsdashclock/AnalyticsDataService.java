@@ -1,5 +1,9 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GAccount;
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProperty;
 import in.co.madhur.ganalyticsdashclock.Consts.APIOperation;
 import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
 

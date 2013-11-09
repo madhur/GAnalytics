@@ -1,6 +1,7 @@
-package in.co.madhur.ganalyticsdashclock;
+package in.co.madhur.ganalyticsdashclock.API;
 
 import android.util.Log;
+import in.co.madhur.ganalyticsdashclock.Consts;
 import in.co.madhur.ganalyticsdashclock.Consts.APIMetrics;
 
 public class GMetric extends GType

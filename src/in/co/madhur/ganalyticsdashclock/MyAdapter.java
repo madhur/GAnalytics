@@ -1,5 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
+
 import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,5 +1,8 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProperty;
 import in.co.madhur.ganalyticsdashclock.AnalyticsDataService.LocalBinder;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;

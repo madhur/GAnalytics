@@ -1,5 +1,6 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
 import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
 
 import java.util.ArrayList;

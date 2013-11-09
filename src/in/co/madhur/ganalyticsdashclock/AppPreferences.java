@@ -1,5 +1,7 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonParseException;
