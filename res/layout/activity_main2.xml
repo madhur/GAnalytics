@@ -8,40 +8,35 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-     <TextView
+    <TextView
         android:id="@+id/statusMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" android:visibility="gone" >
+        android:layout_gravity="center"
+        android:visibility="gone" >
     </TextView>
-    
+
     <ProgressBar
         android:id="@+id/pbHeaderProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" android:visibility="gone" >
+        android:layout_gravity="center"
+        android:visibility="gone" >
     </ProgressBar>
 
     <LinearLayout
         android:id="@+id/spinnerslayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"  >
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
         <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/list_row" android:choiceMode="singleChoice" >
-</ListView>
-        
-        
-<!--         <Spinner android:id="@+id/period_spinner" android:layout_width="fill_parent" android:layout_height="wrap_content"/> -->
-        
-<!--          <Spinner android:id="@+id/metrics_spinner" android:layout_width="fill_parent" android:layout_height="wrap_content"/> -->
-        
+            android:layout_height="fill_parent"
+            android:choiceMode="singleChoice"
+            tools:listitem="@layout/list_row" >
+        </ListView>
     </LinearLayout>
-    
-    
 
 </FrameLayout>

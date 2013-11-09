@@ -81,6 +81,7 @@ public class MainActivity extends Activity
 		appPreferences = new AppPreferences(this);
 
 		setContentView(R.layout.activity_main2);
+		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		listView = (ListView) findViewById(R.id.listview);

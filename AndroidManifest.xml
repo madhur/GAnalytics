@@ -16,7 +16,7 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_dashclock"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <meta-data

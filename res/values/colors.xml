@@ -83,4 +83,5 @@
     <color name="menu_item_dark_color">#aaffffff</color>
     <color name="pressed_analytics">#cc33b5e5</color>
     <color name="pressed_analyticsdarktheme">#cc33b5e5</color>
+     <color name="titlebackgroundcolor">#0099CC</color>
 </resources>

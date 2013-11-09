@@ -11,9 +11,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class CheckedLinearLayout extends LinearLayout implements Checkable
+public class CheckedLinearLayout extends RelativeLayout implements Checkable
 {
 
 	private boolean isChecked;
