@@ -16,6 +16,11 @@
         <item>visitors</item>
         <item>newVisits</item>
         <item>percentNewVisits</item>
+        <item>screenviews</item>
+        <item>uniqueScreenviews</item>
+        <item>screenviewsPerSession</item>
+        <item>timeOnScreen</item>
+        <item>avgScreenviewDuration</item>
     </string-array>
     
         <string-array name="pref_metric">
@@ -23,6 +28,11 @@
         <item>@string/visitors</item>
         <item>@string/newVisits</item>
         <item>@string/percentNewVisits</item>
+         <item>@string/screenviews</item>
+        <item>@string/uniqueScreenviews</item>
+        <item>@string/screenviewsPerSession</item>
+        <item>@string/timeOnScreen</item>
+        <item>@string/avgScreenviewDuration</item>
     </string-array>
     
 
