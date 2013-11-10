@@ -96,7 +96,7 @@ public class MainActivity extends Activity
 
 				if (newProfile != null)
 				{
-					PersistPreferences(newProfile);
+					PersistPreferences(newProfile, credential.getSelectedAccountName());
 				}
 
 			}
@@ -167,9 +167,6 @@ public class MainActivity extends Activity
 		ArrayList<String> navItems = getAccountsList();
 		navItems.add("Add Account");
 
-//		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), R.layout.spinner_item,R.id.spinner_item, navItems);
-//		adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
-		
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), R.layout.spinner_item, navItems);
 		adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
 
@@ -277,7 +274,7 @@ public class MainActivity extends Activity
 						}
 					}
 
-					appPreferences.setUserName(credential.getSelectedAccountName());
+					
 				}
 
 				break;
@@ -343,10 +340,12 @@ public class MainActivity extends Activity
 		return true;
 	}
 
-	private void PersistPreferences(GNewProfile newProfile)
+	private void PersistPreferences(GNewProfile newProfile, String accountEmail)
 	{
 		if (newProfile != null)
-			appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName());
+		{
+			appPreferences.setMetadataMultiple(newProfile.getAccountId(), newProfile.getAccountName(), newProfile.getPropertyId(), newProfile.getPropertyName(), newProfile.getProfileId(), newProfile.getProfileName(), accountEmail);
+		}
 
 	}
 
@@ -384,7 +383,7 @@ public class MainActivity extends Activity
 					String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 					if (accountName != null)
 					{
-						appPreferences.setUserName(accountName);
+						// appPreferences.setUserName(accountName);
 
 						setNavigationList(accountName);
 
@@ -447,7 +446,7 @@ public class MainActivity extends Activity
 	{
 		int selectedIndex = getActionBar().getSelectedNavigationIndex();
 		String selectedAccount = getAccountsList().get(selectedIndex);
-		Log.v(App.TAG, "Initing accounts for " + selectedAccount);
+		
 
 //		if (selectedAccount.equals(appPreferences.getUserName()))
 //		{
@@ -471,10 +470,13 @@ public class MainActivity extends Activity
 
 			if (acProfiles == null)
 			{
+				Log.v(App.TAG, "Initing accounts from net for " + selectedAccount);
 				mService.showAccountsAsync();
 			}
 			else
 			{
+				Log.v(App.TAG, "Initing accounts from cache for " + selectedAccount);
+				
 				UpdateUI(new AnalyticsAccountResult(acProfiles, false));
 				UpdateSelectionPreferences();
 			}

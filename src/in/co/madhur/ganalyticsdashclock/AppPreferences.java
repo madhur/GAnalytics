@@ -123,6 +123,20 @@ public class AppPreferences
 		editor.putString(Keys.PROFILE_NAME.key, profileName);
 		editor.commit();
 	}
+	
+	public void setMetadataMultiple(String accountId, String accountName, String propertyId, String propertyName, String profileId, String profileName, String accountEmail)
+	{
+		Editor editor = sharedPreferences.edit();
+		editor.putString(Keys.ACCOUNT_ID.key, accountId);
+		editor.putString(Keys.ACCOUNT_NAME.key, accountName);
+		editor.putString(Keys.PROPERTY_ID.key, propertyId);
+		editor.putString(Keys.PROPERTY_NAME.key, propertyName);
+		editor.putString(Keys.PROFILE_ID.key, profileId);
+		editor.putString(Keys.PROFILE_NAME.key, profileName);
+		
+		editor.putString(Keys.USER_NAME.key, accountEmail);
+		editor.commit();
+	}
 
 	public String getMetadata(Keys key)
 	{

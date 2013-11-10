@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.analytics.Analytics;
@@ -79,8 +82,6 @@ public class AnalyticsDataService extends Service
 		{
 			super.onPreExecute();
 
-			
-			
 			App.getEventBus().post(new AnalyticsAccountResult(API_STATUS.STARTING));
 
 		}
@@ -133,11 +134,23 @@ public class AnalyticsDataService extends Service
 				catch (GoogleJsonResponseException e)
 				{
 
+					String message = e.getStatusMessage();
 					Log.e(App.TAG, e.getMessage());
-					Log.e(App.TAG, e.getStatusMessage());
-					Log.e(App.TAG, String.valueOf(e.getStatusCode()));
 
-					return new AnalyticsAccountResult(e.getStatusMessage());
+					try
+					{
+						Log.v(App.TAG, e.getMessage().substring(e.getMessage().indexOf("{")));
+						JSONObject json = new JSONObject(new JSONTokener(e.getMessage().substring(e.getMessage().indexOf("{"))));
+						JSONObject error = json.getJSONArray("errors").getJSONObject(0);
+						message = error.getString("message");
+					}
+					catch (Exception ee)
+					{
+
+						Log.e(App.TAG, ee.getMessage());
+					}
+
+					return new AnalyticsAccountResult(message);
 				}
 
 				account_num = accounts.getItems().size();
