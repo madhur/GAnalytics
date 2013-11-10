@@ -11,7 +11,7 @@ public class App extends Application
 	private static Bus bus;
 	public static String TAG="DashAnalytics";
 	
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static final boolean LOCAL_LOGV = DEBUG;
 
 	@Override
