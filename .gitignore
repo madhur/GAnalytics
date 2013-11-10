@@ -29,8 +29,6 @@ proguard/
 .idea/
 
 
-
 .gradle/
 build
 google-play-services_lib
-
