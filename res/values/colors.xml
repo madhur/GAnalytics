@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+      <color name="abs__background_holo_dark">#ff000000</color>
+    <color name="abs__background_holo_light">#fff3f3f3</color>
+    <item type="color" name="abs__bright_foreground_holo_dark">@color/abs__background_holo_light</item>
+    <item type="color" name="abs__bright_foreground_holo_light">@color/abs__background_holo_dark</item>
+    <color name="abs__bright_foreground_disabled_holo_dark">#ff4c4c4c</color>
+    <color name="abs__bright_foreground_disabled_holo_light">#ffb2b2b2</color>
+    <color name="gf_header_background">#ff828282</color>
+    <color name="gf_shadow">#cc222222</color>
+    <color name="gf_foreground_content">#ffffffff</color>
+    <color name="ic_normal">#ff214d7d</color>
+    <color name="ic_focus">#ffe66205</color>
+    <color name="ic_press">#fff7b925</color>
+    <color name="top_bar_degree_1">#ffa7cfdf</color>
+    <color name="top_bar_degree_2">#ff24548b</color>
+    <color name="top_bar_degree_3">#ff24538a</color>
+    <color name="top_bar_separator">#5524548b</color>
+    <color name="metric_item_degree_1">#ffadd2e2</color>
+    <color name="metric_item_degree_2">#ffffffff</color>
+    <color name="metric_item_degree_3">#ffdbe9f4</color>
+    <color name="metric_item_selected_degree_1">#ffa8cfe0</color>
+    <color name="metric_item_selected_degree_2">#ff5286b5</color>
+    <color name="blue_text">#ff214d7d</color>
+    <color name="white_text">#ffffffff</color>
+    <color name="white">#ffffffff</color>
+    <color name="simple_row_text">#ff214d7d</color>
+    <color name="background_gray_degree_1">#ffe9eef2</color>
+    <color name="background_gray_degree_2">#ffbfc7ca</color>
+    <color name="first_column_color">#ff214d7d</color>
+    <color name="second_column_color">#ffbfc7ca</color>
+    <color name="third_column_color">#ffbfc7ca</color>
+    <color name="bg_menu_item_normal">#ffdddddd</color>
+    <color name="bg_menu_item_focused">#ff9d9d9d</color>
+    <color name="bg_menu_item_pressed">#ff9d9d9d</color>
+    <color name="menu_shadow_from">#551a1e26</color>
+    <color name="menu_shadow_to">#00000000</color>
+    <color name="menu_item_color">#ff3b3838</color>
+    <color name="top_bar_blue">#ff214d7d</color>
+    <color name="metric_red">#ffcc0000</color>
+    <color name="metric_green">#ff669900</color>
+    <color name="compare_default_color">#ff000000</color>
+    <color name="metric_value_1">#ff2980b9</color>
+    <color name="metric_value_2">#ffcb5043</color>
+    <color name="metric_value_1_alpha">#cc2980b9</color>
+    <color name="metric_value_2_alpha">#cccb5043</color>
+    <item type="color" name="chart_line_color">@color/metric_value_1</item>
+    <item type="color" name="chart_compare_line_color">@color/metric_value_2</item>
+    <color name="chart_fill_color">#00000000</color>
+    <item type="color" name="detail_bar_fill_color">@color/metric_value_1_alpha</item>
+    <item type="color" name="detail_bar_compare_fill_color">@color/metric_value_2_alpha</item>
+    <color name="detail_bar_date_color">#ff888888</color>
+    <color name="detail_bar_value_color">#ff888888</color>
+    <color name="detail_fill_weekend_color">#22ff0000</color>
+    <color name="gray_text">#ff727272</color>
+    <color name="holo_light_gray_1">#ffdddddd</color>
+    <color name="holo_light_dark_gray_1">#ff999999</color>
+    <color name="holo_light_dark_gray_2">#ff777777</color>
+    <color name="logo_color">#ff0ba8d5</color>
+    <color name="light_blue_color">#ff00a1d3</color>
+    <color name="light_gray_color">#ff727272</color>
+    <color name="light_gray2_color">#ffe6e6e6</color>
+    <color name="light_gray3_color">#ff9c9c9c</color>
+    <color name="light_menu_color">#ffffffff</color>
+    <color name="light_background_color">#ffdddddd</color>
+    <item type="color" name="action_bar_background_light_color">@color/light_blue_color</item>
+    <item type="color" name="app_text_main_light_color">@color/light_blue_color</item>
+    <item type="color" name="app_text_second_light_color">@color/light_gray_color</item>
+    <item type="color" name="header_separator_line_light_color">@color/light_blue_color</item>
+    <item type="color" name="item_separator_line_light_color">@color/light_gray2_color</item>
+    <color name="pie_color_1">#ff00a1d3</color>
+    <color name="pie_color_2">#ff5b9b00</color>
+    <color name="pie_color_3">#ff9245b5</color>
+    <color name="pie_color_4">#ffea8b00</color>
+    <color name="pie_color_5">#ffda0000</color>
+    <color name="pie_color_6">#ff244260</color>
+    <color name="pie_color_7">#ff25c1ac</color>
+    <color name="app_text_second_dark_color">#ff909090</color>
+    <color name="action_bar_background_dark_color">#ff000000</color>
+    <color name="dark_menu_color">#ff222222</color>
+    <color name="dark_background_color">#ff161616</color>
+    <color name="item_separator_line_dark_color">#22ffffff</color>
+    <color name="menu_item_dark_color">#aaffffff</color>
+    <color name="pressed_analytics">#cc33b5e5</color>
+    <color name="pressed_analyticsdarktheme">#cc33b5e5</color>
+     <color name="titlebackgroundcolor">#0099CC</color>
+</resources>

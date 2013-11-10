@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/dashanalytics_preferences">
+        <ListPreference android:title="@string/pref_select_period" android:summary="@string/pref_select_period_desc" android:key="period_id" android:entries="@array/pref_period"  android:entryValues="@array/pref_period_values" android:defaultValue="today"> </ListPreference>
+        <ListPreference android:title="@string/pref_select_metric" android:summary="@string/pref_select_metric_desc" android:key="metric_id" android:entries="@array/pref_metric"  android:entryValues="@array/pref_metric_values" android:defaultValue="visits"></ListPreference>
+        
+<!--         <CheckBoxPreference android:title="@string/pref_disp_lastupdatetime" android:summary="@string/pref_disp_lastupdatetime_desc" android:key="pref_disp_lastupdatetime" android:defaultValue="false"/> -->
+    </PreferenceCategory>
+
+</PreferenceScreen>

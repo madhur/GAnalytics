@@ -1,16 +1,27 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.API.GAccount;
+import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProfile;
+import in.co.madhur.ganalyticsdashclock.API.GProperty;
+import in.co.madhur.ganalyticsdashclock.Consts.APIOperation;
+import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.model.Accounts;
-import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,18 +33,11 @@ import android.widget.Toast;
 public class AnalyticsDataService extends Service
 {
 	public Analytics analytics_service;
-	public ExtensionActivity extensionActivity;
-	private String ProfileId;
+	public MainActivity extensionActivity;
 	static final int REQUEST_AUTHORIZATION = 2;
 	private IBinder binder = new LocalBinder();
 
-	// public AnalyticsDataService(Analytics analytics_service)
-	// {
-	// this.analytics_service=analytics_service;
-	//
-	// }
-
-	public void showAccounts()
+	public void showAccountsAsync()
 	{
 
 		new APIManagementTask().execute(APIOperation.SELECT_ACCOUNT);
@@ -62,7 +66,7 @@ public class AnalyticsDataService extends Service
 
 	public class LocalBinder extends Binder
 	{
-		AnalyticsDataService getService(ExtensionActivity extensionActivity)
+		AnalyticsDataService getService(MainActivity extensionActivity)
 		{
 			AnalyticsDataService.this.extensionActivity = extensionActivity;
 			return AnalyticsDataService.this;
@@ -70,83 +74,99 @@ public class AnalyticsDataService extends Service
 
 	}
 
-	private class APIResultTask extends AsyncTask<String, Integer, GaData>
-	{
-
-		@Override
-		protected GaData doInBackground(String... params)
-		{
-			try
-			{
-				return analytics_service.data().ga().get("ga:" + params[0], // Table Id. ga:
-				// + profile id.
-				"today", // Start date.
-				"today", // End date.
-				"ga:visits") // Metrics.
-				.execute();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-	}
-
 	private class APIManagementTask extends
-			AsyncTask<APIOperation, Integer, List<GAccount>>
+			AsyncTask<APIOperation, Integer, AnalyticsAccountResult>
 	{
-
 		@Override
 		protected void onPreExecute()
 		{
 			super.onPreExecute();
-			App app = (App) getApplication();
+
+			App.getEventBus().post(new AnalyticsAccountResult(API_STATUS.STARTING));
 
 		}
 
 		@Override
-		protected void onPostExecute(List<GAccount> result)
+		protected void onPostExecute(AnalyticsAccountResult result)
 		{
 			super.onPostExecute(result);
-			
+
 			App.getEventBus().post(result);
+
 		}
 
 		@Override
-		protected List<GAccount> doInBackground(APIOperation... params)
+		protected AnalyticsAccountResult doInBackground(APIOperation... params)
 		{
 			Accounts accounts;
 			int account_num;
 			Profiles profiles;
 			com.google.api.services.analytics.model.Webproperties webproperties;
 			String WebpropertyId;
-			String Id;
+			String Id, accountName, propertyName, profileName;
 
-			List<String> list_accounts = new ArrayList<String>();
+			ListMultimap<GProperty, GProfile> propertiesMap = ArrayListMultimap.create();
 			List<GAccount> gAccounts = new ArrayList<GAccount>();
+
+			boolean isApp;
+			ArrayList<GNewProfile> acProfiles = new ArrayList<GNewProfile>();
 
 			try
 			{
 				if (analytics_service == null)
 				{
 
-					Log.e("Tag", "Analytics service object isn null");
+					Log.e(App.TAG, "Analytics service object isn null");
 					return null;
 				}
 
-				accounts = analytics_service.management().accounts().list().execute();
+				int size = analytics_service.management().accounts().list().size();
+				if (size < 1)
+				{
+					getString(R.string.no_analytics_account);
+					Log.v(App.TAG, String.valueOf(size));
+				}
+
+				try
+				{
+					accounts = analytics_service.management().accounts().list().execute();
+				}
+				catch (GoogleJsonResponseException e)
+				{
+
+					String message = e.getStatusMessage();
+					Log.e(App.TAG, e.getMessage());
+
+					try
+					{
+						Log.v(App.TAG, e.getMessage().substring(e.getMessage().indexOf("{")));
+						JSONObject json = new JSONObject(new JSONTokener(e.getMessage().substring(e.getMessage().indexOf("{"))));
+						JSONObject error = json.getJSONArray("errors").getJSONObject(0);
+						message = error.getString("message");
+					}
+					catch (Exception ee)
+					{
+
+						Log.e(App.TAG, ee.getMessage());
+					}
+
+					return new AnalyticsAccountResult(message);
+				}
+
 				account_num = accounts.getItems().size();
 
 				for (int i = 0; i < account_num; i++)
 				{
 
 					Id = accounts.getItems().get(i).getId();
-					Log.d("Analytics_requests", "account_id: " + Id);
-					Log.d("Analytics_requests", "account_name: "
-							+ accounts.getItems().get(i).getName());
+					accountName = accounts.getItems().get(i).getName();
+
+					if (App.LOCAL_LOGV)
+					{
+						Log.d(App.TAG, "account_id: " + Id);
+						Log.d(App.TAG, "account_name: "
+								+ accounts.getItems().get(i).getName());
+					}
 
 					gAccounts.add(new GAccount(Id, accounts.getItems().get(i).getName()));
 
@@ -156,10 +176,20 @@ public class AnalyticsDataService extends Service
 					{
 
 						WebpropertyId = webproperties.getItems().get(j).getId();
-						Log.d("Analytics_requests", "property_id: "
-								+ WebpropertyId);
-						Log.d("Analytics_requests", "property_name: "
-								+ webproperties.getItems().get(j).getName());
+						propertyName = webproperties.getItems().get(j).getName();
+
+						if (App.LOCAL_LOGV)
+						{
+							Log.d(App.TAG, "property_id: " + WebpropertyId);
+							Log.d(App.TAG, "property_name: "
+									+ webproperties.getItems().get(j).getName());
+						}
+
+						String kind = webproperties.getItems().get(j).getWebsiteUrl();
+						if (kind == null)
+							isApp = true;
+						else
+							isApp = false;
 
 						GProperty gProperty = new GProperty(WebpropertyId, webproperties.getItems().get(j).getName());
 						gAccounts.get(i).getProperties().add(gProperty);
@@ -171,21 +201,27 @@ public class AnalyticsDataService extends Service
 							for (int k = 0; k < profiles.getItems().size(); ++k)
 							{
 								String Profile_Id = profiles.getItems().get(k).getId();
-								Log.d("Analytics_requests", "profile_id: "
-										+ Profile_Id);
-								Log.d("Analytics_requests", "profile_id: "
-										+ profiles.getItems().get(k).getName());
+								profileName = profiles.getItems().get(k).getName();
+
+								if (App.LOCAL_LOGV)
+								{
+									Log.d(App.TAG, "profile_id: " + Profile_Id);
+									Log.d(App.TAG, "profile_id: "
+											+ profiles.getItems().get(k).getName());
+								}
 
 								GProfile gProfile = new GProfile(Profile_Id, profiles.getItems().get(k).getName());
+
 								gAccounts.get(i).getProperties().get(j).getProfiles().add(gProfile);
 
-								// ProfileId = Profile_Id;
+								acProfiles.add(new GNewProfile(Id, accountName, WebpropertyId, propertyName, Profile_Id, profileName, isApp));
+								propertiesMap.put(gProperty, gProfile);
+
 							}
 						}
 
 					}
 
-					list_accounts.add(accounts.getItems().get(i).getName());
 				}
 
 			}
@@ -198,36 +234,8 @@ public class AnalyticsDataService extends Service
 				e.printStackTrace();
 			}
 
-			return gAccounts;
+			return new AnalyticsAccountResult(acProfiles, true);
 
-		}
-
-		private GaData getResults(Analytics analytics, String profileId)
-				throws IOException
-		{
-
-			return analytics.data().ga().get("ga:" + profileId, // Table Id. ga:
-																// + profile id.
-			"today", // Start date.
-			"today", // End date.
-			"ga:visits") // Metrics.
-			.execute();
-		}
-
-		private void printResults(GaData results)
-		{
-			if (results != null && !results.getRows().isEmpty())
-			{
-				Log.v("TAG", "View (Profile) Name: "
-						+ results.getProfileInfo().getProfileName());
-
-				String result = results.getRows().get(0).get(0);
-				Log.v("TAG", "Total Visits: " + result);
-			}
-			else
-			{
-				Log.v("Tag", "No results found");
-			}
 		}
 
 	}

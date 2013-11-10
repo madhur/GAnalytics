@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GAnalytics Dashclock</string>
+    <string name="app_name">DashAnalytics</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-<string name="select_google_account">Select a Google account</string>
+    <string name="select_google_account">Select a Google account</string>
+    <string name="txtSelectAccount">Analytics Account</string>
+    <string name="txtSelectProperty">Property</string>
+    <string name="txtSelectProfile">Profile</string>
+    <string name="txtSelectMetric">Metric</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="visits">Visits</string>
+    <string name="visitors">Visitors</string>
+    <string name="newVisits">New visits</string>
+    <string name="percentNewVisits">Percentage New Visits</string>
+    
+    <string name="screenviews">Screen Views</string>
+    <string name="uniqueScreenviews">Unique Screen Views</string>
+    <string name="screenviewsPerSession">Screen Views Per Session</string>
+    <string name="timeOnScreen">Time on Screen</string>
+    <string name="avgScreenviewDuration">Average Screen View Duration</string>
+    
+    <string name="pageviews">Page Views</string>
+        
+    <string name="visitBounceRate">Bounce Rate</string>
+    <string name="pageviewsPerVisit">Page Views Per Visit</string>
+        
+    
+    <string name="gps_missing">Your phone seems to be missing Google Play Services. If it\'s a custom ROM make sure you have installed GApps package</string>
+    <string name="no_analytics_account">The Google account does not have any analytics accounts associated with it. Either select a different account or associate a analytics account with this Google account</string>
+    <string name="txtSave">Done</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="network_not_connected">Network connection not available to refresh the account data</string>
+    <string name="extension_title">DashAnalytics</string>
+    <string name="extension_description">Display Google Analytics metric on Dashclock widget</string>
+    <string name="title_display_format" formatted="false">%s %s: %s</string>
+    <string name="body_display_format" formatted="false">%s (%s)</string>
+    <string name="dashanalytics_preferences">DashAnalytics Preferences</string>
+    <string name="pref_select_period">Select Period</string>
+    <string name="pref_select_period_desc">Select time period to query</string>
+    <string name="pref_select_metric">Select Metric</string>
+    <string name="pref_select_metric_desc">Select Metric to be displayed</string>
+    <string name="pref_disp_lastupdatetime">Display Last Update time</string>
+    <string name="pref_disp_lastupdatetime_desc">If Selected, displays the last successful update time</string>
+
 </resources>

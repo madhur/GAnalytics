@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="pref_period">
+        <item>@string/today</item>
+        <item>@string/yesterday</item>
+    </string-array>
+
+    <string-array name="pref_period_values">
+        <item>today</item>
+        <item>yesterday</item>
+    </string-array>
+     
+    <string-array name="pref_metric_values">
+        <item>visits</item>
+        <item>visitors</item>
+        <item>newVisits</item>
+        <item>percentNewVisits</item>
+        
+        <item>pageviews</item>
+        <item>visitBounceRate</item>
+        <item>pageviewsPerVisit</item>
+        
+        <item>screenviews</item>
+        <item>uniqueScreenviews</item>
+        <item>screenviewsPerSession</item>
+    </string-array>
+    
+        <string-array name="pref_metric">
+        <item>@string/visits</item>
+        <item>@string/visitors</item>
+        <item>@string/newVisits</item>
+        <item>@string/percentNewVisits</item>
+        
+        <item>@string/pageviews</item>
+        <item>@string/visitBounceRate</item>
+        <item>@string/pageviewsPerVisit</item>
+        
+         <item>@string/screenviews</item>
+        <item>@string/uniqueScreenviews</item>
+        <item>@string/screenviewsPerSession</item>
+    </string-array>
+    
+
+    
+
+</resources>
