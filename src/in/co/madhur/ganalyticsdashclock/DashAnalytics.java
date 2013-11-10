@@ -6,8 +6,6 @@ import java.util.List;
 
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,8 +35,7 @@ public class DashAnalytics extends DashClockExtension
 		// Check if user has changed the account, in that case, retrieve the new
 		// credential object
 
-		if (credential == null
-				|| !credential.getSelectedAccountName().equals(appPreferences.getUserName()))
+		if (credential == null || credential.getSelectedAccountName()==null|| !credential.getSelectedAccountName().equals(appPreferences.getUserName()))
 		{
 			Log.d(App.TAG, "Account changed, retrieving new cred object");
 
@@ -67,7 +64,9 @@ public class DashAnalytics extends DashClockExtension
 
 		if (Connection.isConnected(this))
 		{
-			Log.v(App.TAG, "Firing update:" + String.valueOf(arg0));
+			if(App.LOCAL_LOGV)
+				Log.v(App.TAG, "Firing update:" + String.valueOf(arg0));
+			
 			new APIResultTask().execute(ProfileId, metricKey, periodKey);
 		}
 		else
@@ -79,7 +78,6 @@ public class DashAnalytics extends DashClockExtension
 	{
 		super.onInitialize(isReconnect);
 		appPreferences = new AppPreferences(this);
-//		appPreferences.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
@@ -122,9 +120,9 @@ public class DashAnalytics extends DashClockExtension
 			int periodIdentifier = getResources().getIdentifier(periodKey, "string", DashAnalytics.this.getPackageName());
 			String result;
 
-			Log.d(App.TAG, "Processing result for " + profileName);
+			if(App.LOCAL_LOGV)
+				Log.v(App.TAG, "Processing result for " + profileName);
 
-			Log.d(App.TAG, "onPostExecute");
 			if (results != null && results.getRows() != null)
 			{
 
@@ -155,6 +153,8 @@ public class DashAnalytics extends DashClockExtension
 			{
 				result = "-1";
 				Log.d(App.TAG, "null result");
+				publishUpdate(null);
+				return;
 			}
 
 			try

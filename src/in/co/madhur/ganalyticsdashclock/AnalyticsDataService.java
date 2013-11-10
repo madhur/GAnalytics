@@ -161,9 +161,12 @@ public class AnalyticsDataService extends Service
 					Id = accounts.getItems().get(i).getId();
 					accountName = accounts.getItems().get(i).getName();
 
-					Log.d(App.TAG, "account_id: " + Id);
-					Log.d(App.TAG, "account_name: "
-							+ accounts.getItems().get(i).getName());
+					if (App.LOCAL_LOGV)
+					{
+						Log.d(App.TAG, "account_id: " + Id);
+						Log.d(App.TAG, "account_name: "
+								+ accounts.getItems().get(i).getName());
+					}
 
 					gAccounts.add(new GAccount(Id, accounts.getItems().get(i).getName()));
 
@@ -174,9 +177,13 @@ public class AnalyticsDataService extends Service
 
 						WebpropertyId = webproperties.getItems().get(j).getId();
 						propertyName = webproperties.getItems().get(j).getName();
-						Log.d(App.TAG, "property_id: " + WebpropertyId);
-						Log.d(App.TAG, "property_name: "
-								+ webproperties.getItems().get(j).getName());
+
+						if (App.LOCAL_LOGV)
+						{
+							Log.d(App.TAG, "property_id: " + WebpropertyId);
+							Log.d(App.TAG, "property_name: "
+									+ webproperties.getItems().get(j).getName());
+						}
 
 						String kind = webproperties.getItems().get(j).getWebsiteUrl();
 						if (kind == null)
@@ -196,9 +203,12 @@ public class AnalyticsDataService extends Service
 								String Profile_Id = profiles.getItems().get(k).getId();
 								profileName = profiles.getItems().get(k).getName();
 
-								Log.d(App.TAG, "profile_id: " + Profile_Id);
-								Log.d(App.TAG, "profile_id: "
-										+ profiles.getItems().get(k).getName());
+								if (App.LOCAL_LOGV)
+								{
+									Log.d(App.TAG, "profile_id: " + Profile_Id);
+									Log.d(App.TAG, "profile_id: "
+											+ profiles.getItems().get(k).getName());
+								}
 
 								GProfile gProfile = new GProfile(Profile_Id, profiles.getItems().get(k).getName());
 

@@ -21,6 +21,12 @@
     <string name="timeOnScreen">Time on Screen</string>
     <string name="avgScreenviewDuration">Average Screen View Duration</string>
     
+    <string name="pageviews">Page Views</string>
+        
+    <string name="visitBounceRate">Bounce Rate</string>
+    <string name="pageviewsPerVisit">Page Views Per Visit</string>
+        
+    
     <string name="gps_missing">Your phone seems to be missing Google Play Services. If it\'s a custom ROM make sure you have installed GApps package</string>
     <string name="no_analytics_account">The Google account does not have any analytics accounts associated with it. Either select a different account or associate a analytics account with this Google account</string>
     <string name="txtSave">Done</string>
@@ -32,7 +38,7 @@
     <string name="body_display_format" formatted="false">%s (%s)</string>
     <string name="dashanalytics_preferences">DashAnalytics Preferences</string>
     <string name="pref_select_period">Select Period</string>
-    <string name="pref_select_period_desc">Select Period to query for</string>
+    <string name="pref_select_period_desc">Select time period to query</string>
     <string name="pref_select_metric">Select Metric</string>
     <string name="pref_select_metric_desc">Select Metric to be displayed</string>
     <string name="pref_disp_lastupdatetime">Display Last Update time</string>

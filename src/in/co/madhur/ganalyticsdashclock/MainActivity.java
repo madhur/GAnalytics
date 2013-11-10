@@ -31,13 +31,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,7 +75,7 @@ public class MainActivity extends Activity
 		appPreferences = new AppPreferences(this);
 
 		setContentView(R.layout.activity_main2);
-		
+
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		listView = (ListView) findViewById(R.id.listview);
@@ -89,7 +87,6 @@ public class MainActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				  
 
 				MyAdapter myAdapter = (MyAdapter) listView.getAdapter();
 				GNewProfile newProfile = (GNewProfile) myAdapter.getItem(position);
@@ -101,18 +98,6 @@ public class MainActivity extends Activity
 
 			}
 		});
-
-		// listNavigator = new OnNavigationListener()
-		// {
-		//
-		// @Override
-		// public boolean onNavigationItemSelected(int itemPosition, long
-		// itemId)
-		// {
-		// // TODO Auto-generated method stub
-		// return false;
-		// }
-		// };
 
 		scopes.add(AnalyticsScopes.ANALYTICS_READONLY);
 
@@ -186,8 +171,10 @@ public class MainActivity extends Activity
 
 				if (getAccountsList().size() >= itemPosition)
 				{
-					Log.v(App.TAG, "Fetching accounts for:"
-							+ getAccountsList().get(itemPosition));
+					if (App.LOCAL_LOGV)
+						Log.v(App.TAG, "Fetching accounts for:"
+								+ getAccountsList().get(itemPosition));
+
 					credential.setSelectedAccountName(getAccountsList().get(itemPosition));
 
 					analytics_service = getAnalyticsService(credential);
@@ -260,9 +247,10 @@ public class MainActivity extends Activity
 
 					UpdateSelectionPreferences();
 
-					if (result.isPersist())
+					if (result.isPersist() && acProfiles.size() > 0)
 					{
-						Log.d(App.TAG, "saving configdata");
+						if (App.LOCAL_LOGV)
+							Log.v(App.TAG, "saving configdata");
 
 						try
 						{
@@ -274,7 +262,6 @@ public class MainActivity extends Activity
 						}
 					}
 
-					
 				}
 
 				break;
@@ -383,8 +370,6 @@ public class MainActivity extends Activity
 					String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 					if (accountName != null)
 					{
-						// appPreferences.setUserName(accountName);
-
 						setNavigationList(accountName);
 
 						credential.setSelectedAccountName(accountName);
@@ -392,6 +377,11 @@ public class MainActivity extends Activity
 
 						getAnalyticsAccounts();
 					}
+				}
+				else if (resultCode==RESULT_CANCELED)
+				{
+					
+					setNavigationList(null);
 				}
 
 				break;
@@ -446,46 +436,39 @@ public class MainActivity extends Activity
 	{
 		int selectedIndex = getActionBar().getSelectedNavigationIndex();
 		String selectedAccount = getAccountsList().get(selectedIndex);
-		
 
-//		if (selectedAccount.equals(appPreferences.getUserName()))
-//		{
-			try
-			{
-				acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData(selectedAccount);
+		try
+		{
+			acProfiles = (ArrayList<GNewProfile>) appPreferences.getConfigData(selectedAccount);
 
-			}
-			catch (JsonParseException e)
-			{
-				Log.e(App.TAG, e.getMessage());
-			}
-			catch (JsonMappingException e)
-			{
-				Log.e(App.TAG, e.getMessage());
-			}
-			catch (IOException e)
-			{
-				Log.e(App.TAG, e.getMessage());
-			}
+		}
+		catch (JsonParseException e)
+		{
+			Log.e(App.TAG, e.getMessage());
+		}
+		catch (JsonMappingException e)
+		{
+			Log.e(App.TAG, e.getMessage());
+		}
+		catch (IOException e)
+		{
+			Log.e(App.TAG, e.getMessage());
+		}
 
-			if (acProfiles == null)
-			{
+		if (acProfiles == null)
+		{
+			if(App.LOCAL_LOGV)
 				Log.v(App.TAG, "Initing accounts from net for " + selectedAccount);
-				mService.showAccountsAsync();
-			}
-			else
-			{
+			mService.showAccountsAsync();
+		}
+		else
+		{
+			if(App.LOCAL_LOGV)
 				Log.v(App.TAG, "Initing accounts from cache for " + selectedAccount);
-				
-				UpdateUI(new AnalyticsAccountResult(acProfiles, false));
-				UpdateSelectionPreferences();
-			}
-//		}
-//		else
-//		{
-//			mService.showAccountsAsync();
-//
-//		}
+
+			UpdateUI(new AnalyticsAccountResult(acProfiles, false));
+			UpdateSelectionPreferences();
+		}
 
 	}
 
