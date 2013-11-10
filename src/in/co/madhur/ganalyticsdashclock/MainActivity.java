@@ -31,11 +31,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,6 +89,7 @@ public class MainActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
+				  
 
 				MyAdapter myAdapter = (MyAdapter) listView.getAdapter();
 				GNewProfile newProfile = (GNewProfile) myAdapter.getItem(position);
@@ -164,9 +167,11 @@ public class MainActivity extends Activity
 		ArrayList<String> navItems = getAccountsList();
 		navItems.add("Add Account");
 
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), android.R.layout.simple_spinner_item, android.R.id.text1, navItems);
-
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), R.layout.spinner_item,R.id.spinner_item, navItems);
+//		adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
+		
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActionBar().getThemedContext(), R.layout.spinner_item, navItems);
+		adapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
 
 		getActionBar().setListNavigationCallbacks(adapter, new OnNavigationListener()
 		{

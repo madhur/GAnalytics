@@ -18,6 +18,7 @@
         android:layout_marginLeft="25dp"
         android:layout_toRightOf="@id/radioselect"
         android:text="Header"
+        android:textStyle="bold"
         android:textColor="@color/app_text_main_light_color"
         android:textSize="@dimen/text_size_large" />
 
@@ -28,7 +29,7 @@
         android:layout_alignLeft="@id/property_name"
         android:layout_below="@id/property_name"
         android:text="Profile"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_small" />
 
     <ImageView
         android:id="@+id/AccountTypeImage"
