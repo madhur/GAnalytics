@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -70,6 +72,14 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		if (status != ConnectionResult.SUCCESS)
+		{
+			Toast.makeText(this, getString(R.string.gps_missing), Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 
 		List<String> scopes = new ArrayList<String>();
 		appPreferences = new AppPreferences(this);
@@ -378,9 +388,9 @@ public class MainActivity extends Activity
 						getAnalyticsAccounts();
 					}
 				}
-				else if (resultCode==RESULT_CANCELED)
+				else if (resultCode == RESULT_CANCELED)
 				{
-					
+
 					setNavigationList(null);
 				}
 
@@ -457,14 +467,16 @@ public class MainActivity extends Activity
 
 		if (acProfiles == null)
 		{
-			if(App.LOCAL_LOGV)
-				Log.v(App.TAG, "Initing accounts from net for " + selectedAccount);
+			if (App.LOCAL_LOGV)
+				Log.v(App.TAG, "Initing accounts from net for "
+						+ selectedAccount);
 			mService.showAccountsAsync();
 		}
 		else
 		{
-			if(App.LOCAL_LOGV)
-				Log.v(App.TAG, "Initing accounts from cache for " + selectedAccount);
+			if (App.LOCAL_LOGV)
+				Log.v(App.TAG, "Initing accounts from cache for "
+						+ selectedAccount);
 
 			UpdateUI(new AnalyticsAccountResult(acProfiles, false));
 			UpdateSelectionPreferences();

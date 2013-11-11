@@ -1,10 +1,13 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
+import in.co.madhur.ganalyticsdashclock.API.APIResult;
+import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -34,6 +37,7 @@ public class DashAnalytics extends DashClockExtension
 	{
 		// Check if user has changed the account, in that case, retrieve the new
 		// credential object
+		
 
 		if (credential == null || credential.getSelectedAccountName()==null|| !credential.getSelectedAccountName().equals(appPreferences.getUserName()))
 		{
@@ -89,30 +93,41 @@ public class DashAnalytics extends DashClockExtension
 
 	}
 
-	private class APIResultTask extends AsyncTask<String, Integer, GaData>
+	private class APIResultTask extends AsyncTask<String, Integer, APIResult>
 	{
 
 		@Override
-		protected GaData doInBackground(String... params)
+		protected APIResult doInBackground(String... params)
 		{
 			try
 			{
 				Get apiQuery = analytics_service.data().ga().get("ga:"
 						+ params[0], params[2], params[2], "ga:" + params[1]);
 				Log.d(App.TAG, apiQuery.toString());
-
-				return apiQuery.execute();
+				
+				return new APIResult(API_STATUS.SUCCESS, apiQuery.execute(), null);
+			}
+			catch(UnknownHostException e)
+			{
+				Log.e(App.TAG, "Exception unknownhost in doInBackground" + e.getMessage());
+				return new APIResult(API_STATUS.FAILURE, null, e.getMessage());
 			}
 			catch (Exception e)
 			{
 				Log.e(App.TAG, "Exception in doInBackground" + e.getMessage());
+				return new APIResult(API_STATUS.FAILURE, null, e.getMessage());
 			}
-			return null;
 		}
 
 		@Override
-		protected void onPostExecute(GaData results)
+		protected void onPostExecute(APIResult resultAPI)
 		{
+			// Do not do anything if there is a failure, could be network condition.
+			if(resultAPI.getStatus()==API_STATUS.FAILURE)
+				return;
+			
+			GaData results= resultAPI.getResult();
+			
 			String profileName = appPreferences.getMetadata(Keys.PROFILE_NAME);
 			String selectedProperty = appPreferences.getMetadata(Keys.PROPERTY_NAME);
 			String metricKey = appPreferences.getMetadata(Keys.METRIC_ID);
