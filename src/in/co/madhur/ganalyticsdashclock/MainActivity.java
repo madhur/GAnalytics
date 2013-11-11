@@ -76,6 +76,7 @@ public class MainActivity extends Activity
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if (status != ConnectionResult.SUCCESS)
 		{
+			Log.e(App.TAG, String.valueOf(status));
 			Toast.makeText(this, getString(R.string.gps_missing), Toast.LENGTH_LONG).show();
 			finish();
 			return;
