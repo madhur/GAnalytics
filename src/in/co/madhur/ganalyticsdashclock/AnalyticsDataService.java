@@ -14,6 +14,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.crittercism.app.Crittercism;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.analytics.Analytics;
@@ -153,7 +154,18 @@ public class AnalyticsDataService extends Service
 					return new AnalyticsAccountResult(message);
 				}
 
-				account_num = accounts.getItems().size();
+				try
+				{
+					account_num = accounts.getItems().size();
+				}
+				catch (NullPointerException e)
+				{
+					// This exception occured for a user.
+					Log.e(App.TAG, e.getMessage());
+					Crittercism.logHandledException(e);
+					return new AnalyticsAccountResult("Could not retrieve accounts");
+
+				}
 
 				for (int i = 0; i < account_num; i++)
 				{
