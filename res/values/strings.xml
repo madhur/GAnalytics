@@ -43,5 +43,10 @@
     <string name="pref_select_metric_desc">Select Metric to be displayed</string>
     <string name="pref_disp_lastupdatetime">Display Last Update time</string>
     <string name="pref_disp_lastupdatetime_desc">If Selected, displays the last successful update time</string>
+    
+        <string name="title_apps">Apps</string>
+    <string name="title_shortcuts">Shortcuts</string>
+    <string name="pref_shortcut_default">Default</string>
+     <string name="click_behave_title">Click behavior</string>
 
 </resources>

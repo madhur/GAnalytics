@@ -35,6 +35,7 @@ public class AppPreferences
 		PROFILE_NAME("profile_name"),
 		METRIC_ID("metric_id"),
 		PERIOD_ID("period_id"),
+		ANALYTICS_CLICK_INTENT("analytics_click_intent"),
 		AUTH_TOKEN("pref_auth_token");
 
 		public final String key;

@@ -9,12 +9,14 @@ import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 import in.co.madhur.ganalyticsdashclock.API.APIResult;
 import in.co.madhur.ganalyticsdashclock.Consts.API_STATUS;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
+import com.google.android.apps.dashclock.configuration.AppChooserPreference;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -171,10 +173,12 @@ public class DashAnalytics extends DashClockExtension
 				publishUpdate(null);
 				return;
 			}
+			
+			Intent clickIntent = AppChooserPreference.getIntentValue(appPreferences.getMetadata(Keys.ANALYTICS_CLICK_INTENT), null);
 
 			try
 			{
-				publishUpdate(new ExtensionData().visible(true).status(result).icon(R.drawable.ic_dashclock).expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier), getString(periodIdentifier), result)).expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)));
+				publishUpdate(new ExtensionData().visible(true).status(result).icon(R.drawable.ic_dashclock).expandedTitle(String.format(getString(R.string.title_display_format), getString(metricIdentifier), getString(periodIdentifier), result)).expandedBody(String.format(getString(R.string.body_display_format), profileName, selectedProperty)).clickIntent(clickIntent));
 			}
 			catch (Exception e)
 			{

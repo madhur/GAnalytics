@@ -1,11 +1,15 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import com.google.android.apps.dashclock.configuration.AppChooserPreference;
+
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.text.TextUtils;
+import android.view.MenuItem;
 
 public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 {
@@ -30,6 +34,18 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 		appPreferences = new AppPreferences(this);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		addPreferencesFromResource(R.xml.preference);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		return true;
 	}
 
 	@Override
@@ -65,6 +81,31 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 		findPreference(Keys.METRIC_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
 
 		findPreference(Keys.PERIOD_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
+
+		final String intentKey;
+		Keys clickIntentKey;
+		intentKey = Keys.ANALYTICS_CLICK_INTENT.key;
+		clickIntentKey = Keys.ANALYTICS_CLICK_INTENT;
+
+		CharSequence intentSummary = AppChooserPreference.getDisplayValue(this, appPreferences.getMetadata(clickIntentKey));
+		getPreferenceScreen().findPreference(intentKey).setSummary(TextUtils.isEmpty(intentSummary)
+				|| intentSummary.equals(getString(R.string.pref_shortcut_default)) ? ""
+				: intentSummary);
+
+		getPreferenceScreen().findPreference(intentKey).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+		{
+
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue)
+			{
+				CharSequence intentSummary = AppChooserPreference.getDisplayValue(getBaseContext(), newValue.toString());
+				getPreferenceScreen().findPreference(intentKey).setSummary(TextUtils.isEmpty(intentSummary)
+						|| intentSummary.equals(getResources().getString(R.string.pref_shortcut_default)) ? ""
+						: intentSummary);
+				return true;
+			}
+
+		});
 
 	}
 

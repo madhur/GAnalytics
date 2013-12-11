@@ -298,7 +298,7 @@ public class MainActivity extends Activity
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		getMenuInflater().inflate(R.menu.main, (android.view.Menu) menu);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
@@ -306,6 +306,10 @@ public class MainActivity extends Activity
 	{
 		switch (item.getItemId())
 		{
+			case android.R.id.home:
+			    finish();
+			    break;
+			    
 			case R.id.action_refresh:
 				if (!mBound || mService == null)
 				{
