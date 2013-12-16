@@ -3,9 +3,12 @@ package in.co.madhur.ganalyticsdashclock;
 import com.google.android.apps.dashclock.configuration.AppChooserPreference;
 
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.TextUtils;
@@ -35,7 +38,7 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		addPreferencesFromResource(R.xml.preference);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -81,6 +84,30 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 		findPreference(Keys.METRIC_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
 
 		findPreference(Keys.PERIOD_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
+
+		findPreference(Keys.DASH_PRO.key).setOnPreferenceClickListener(new OnPreferenceClickListener()
+		{
+
+			@Override
+			public boolean onPreferenceClick(Preference preference)
+			{
+				final String appPackageName = Consts.PRO_APP; // getPackageName()
+																// from Context
+																// or Activity
+																// object
+				try
+				{
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
+							+ appPackageName)));
+				}
+				catch (android.content.ActivityNotFoundException anfe)
+				{
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
+							+ appPackageName)));
+				}
+				return true;
+			}
+		});
 
 		final String intentKey;
 		Keys clickIntentKey;

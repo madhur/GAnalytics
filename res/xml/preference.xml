@@ -12,6 +12,12 @@
         <!-- <CheckBoxPreference android:title="@string/pref_disp_lastupdatetime" android:summary="@string/pref_disp_lastupdatetime_desc" android:key="pref_disp_lastupdatetime" android:defaultValue="false"/> -->
     </PreferenceCategory>
     
+    <PreferenceCategory android:title="@string/pref_dash_pro"></PreferenceCategory>
+    <Preference android:key="pref_dash_pro" android:title="@string/pref_dash_pro" android:summary="@string/pref_dash_pro_desc">
+        
+        
+    </Preference>
+    
 <!--         <CheckBoxPreference android:title="@string/pref_disp_lastupdatetime" android:summary="@string/pref_disp_lastupdatetime_desc" android:key="pref_disp_lastupdatetime" android:defaultValue="false"/> -->
 
 </PreferenceScreen>

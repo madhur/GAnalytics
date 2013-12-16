@@ -36,6 +36,7 @@ public class AppPreferences
 		METRIC_ID("metric_id"),
 		PERIOD_ID("period_id"),
 		ANALYTICS_CLICK_INTENT("analytics_click_intent"),
+		DASH_PRO("pref_dash_pro"),
 		AUTH_TOKEN("pref_auth_token");
 
 		public final String key;
