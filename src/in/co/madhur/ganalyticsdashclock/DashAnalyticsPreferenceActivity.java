@@ -2,53 +2,47 @@ package in.co.madhur.ganalyticsdashclock;
 
 import com.google.android.apps.dashclock.configuration.AppChooserPreference;
 
+import in.co.madhur.ganalyticsdashclock.AppPreferences.ANALYTICS_KEYS;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-public class DashAnalyticsPreferenceActivity extends PreferenceActivity
+public class DashAnalyticsPreferenceActivity extends BasePreferenceActivity
 {
-	AppPreferences appPreferences;
 
-	private OnPreferenceChangeListener listPreferenceChangeListerner = new OnPreferenceChangeListener()
+	@Override
+	protected void EnableDisablePreferences(boolean loading)
 	{
 
-		@Override
-		public boolean onPreferenceChange(Preference preference, Object newValue)
-		{
-			UpdateLabel((ListPreference) preference, newValue.toString());
-			return true;
-		}
-	};
+		EnableDisablePreferences(loading, 4);
+
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
-		appPreferences = new AppPreferences(this);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		addPreferencesFromResource(R.xml.preference);
-	}
+		PreferenceManager prefMgr = getPreferenceManager();
+		//prefMgr.setSharedPreferencesName(Consts.ANALYTICS_PREFERENCE_NAME);
+		//prefMgr.setSharedPreferencesMode(Context.MODE_PRIVATE);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
-			case android.R.id.home:
-				finish();
-				break;
-		}
-		return true;
+		appPreferences = new AppPreferences(this);
+		addPreferencesFromResource(R.xml.preference);
+
+		this.appPreferences.sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+
 	}
 
 	@Override
@@ -56,84 +50,33 @@ public class DashAnalyticsPreferenceActivity extends PreferenceActivity
 	{
 		super.onResume();
 
-		SetListeners();
-
 		UpdateLabel((ListPreference) findPreference(Keys.METRIC_ID.key), null);
 		UpdateLabel((ListPreference) findPreference(Keys.PERIOD_ID.key), null);
-	}
 
-	private void UpdateLabel(ListPreference listPreference, String newValue)
-	{
-
-		if (newValue == null)
+		prefKeys.clear();
+		for (ANALYTICS_KEYS key : ANALYTICS_KEYS.values())
 		{
-			newValue = listPreference.getValue();
+
+			prefKeys.add(key.key);
 		}
 
-		int index = listPreference.findIndexOfValue(newValue);
-		if (index != -1)
-		{
-			newValue = (String) listPreference.getEntries()[index];
-			listPreference.setTitle(newValue);
-		}
+		prefKeys.add(Keys.SHOW_PROFILE.key);
+		prefKeys.add(Keys.SHOW_ANALYTICS_LASTUPDATE.key);
+
+		EnableDisablePreferences(true);
 
 	}
 
-	private void SetListeners()
+	@Override
+	protected void SetListeners()
 	{
+		super.SetListeners();
+
 		findPreference(Keys.METRIC_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
 
 		findPreference(Keys.PERIOD_ID.key).setOnPreferenceChangeListener(listPreferenceChangeListerner);
 
-		findPreference(Keys.DASH_PRO.key).setOnPreferenceClickListener(new OnPreferenceClickListener()
-		{
-
-			@Override
-			public boolean onPreferenceClick(Preference preference)
-			{
-				final String appPackageName = Consts.PRO_APP; // getPackageName()
-																// from Context
-																// or Activity
-																// object
-				try
-				{
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
-							+ appPackageName)));
-				}
-				catch (android.content.ActivityNotFoundException anfe)
-				{
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
-							+ appPackageName)));
-				}
-				return true;
-			}
-		});
-
-		final String intentKey;
-		Keys clickIntentKey;
-		intentKey = Keys.ANALYTICS_CLICK_INTENT.key;
-		clickIntentKey = Keys.ANALYTICS_CLICK_INTENT;
-
-		CharSequence intentSummary = AppChooserPreference.getDisplayValue(this, appPreferences.getMetadata(clickIntentKey));
-		getPreferenceScreen().findPreference(intentKey).setSummary(TextUtils.isEmpty(intentSummary)
-				|| intentSummary.equals(getString(R.string.pref_shortcut_default)) ? ""
-				: intentSummary);
-
-		getPreferenceScreen().findPreference(intentKey).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-		{
-
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue)
-			{
-				CharSequence intentSummary = AppChooserPreference.getDisplayValue(getBaseContext(), newValue.toString());
-				getPreferenceScreen().findPreference(intentKey).setSummary(TextUtils.isEmpty(intentSummary)
-						|| intentSummary.equals(getResources().getString(R.string.pref_shortcut_default)) ? ""
-						: intentSummary);
-				return true;
-			}
-
-		});
-
 	}
+
 
 }

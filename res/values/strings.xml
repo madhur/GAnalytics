@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">DashAnalytics</string>
-    <string name="action_settings">Settings</string>
+    
+      <string name="action_settings">Settings</string>
     <string name="select_google_account">Select a Google account</string>
     <string name="txtSelectAccount">Analytics Account</string>
     <string name="txtSelectProperty">Property</string>
@@ -10,45 +11,140 @@
     <string name="txtSelectMetric">Metric</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
-    <string name="visits">Visits</string>
-    <string name="visitors">Visitors</string>
-    <string name="newVisits">New visits</string>
-    <string name="percentNewVisits">Percentage New Visits</string>
+    <string name="thismonth">This month</string>
+    <string name="lastmonth">Last month</string>
+    <string name="last30days">Last 30 days</string>
+    <string name="lastweek">Last Week</string>
     
-    <string name="screenviews">Screen Views</string>
-    <string name="uniqueScreenviews">Unique Screen Views</string>
-    <string name="screenviewsPerSession">Screen Views Per Session</string>
-    <string name="timeOnScreen">Time on Screen</string>
-    <string name="avgScreenviewDuration">Average Screen View Duration</string>
+    <string name="ga_visits">Visits</string>
+    <string name="ga_visitors">Unique Visitors</string>
+    <string name="ga_newVisits">New visits</string>
+    <string name="ga_percentNewVisits">% New Visits</string>
     
-    <string name="pageviews">Page Views</string>
+    <string name="ga_screenviews">Screen Views</string>
+    <string name="ga_uniqueScreenviews">Unique Screen Views</string>
+    <string name="ga_screenviewsPerSession">Screen Views / Session</string>
+    <string name="ga_timeOnScreen">Time on Screen</string>
+    <string name="ga_avgScreenviewDuration">Average Screen View Duration</string>
+    
+    <string name="ga_pageviews">Page Views</string>
         
-    <string name="visitBounceRate">Bounce Rate</string>
-    <string name="pageviewsPerVisit">Page Views Per Visit</string>
+    <string name="ga_visitBounceRate">Bounce Rate</string>
+    <string name="ga_pageviewsPerVisit">Page Views / Visit</string>
+     
+     <string name="ga_goalCompletionsAll">Goal Completions</string>
+      <string name="ga_goalValueAll">Goal Value</string>
+       <string name="ga_goalConversionRateAll">Goal Conversion Rate</string>
         
     
     <string name="gps_missing">Your phone seems to be missing Google Play Services. If it\'s a custom ROM make sure you have installed GApps package</string>
     <string name="no_analytics_account">The Google account does not have any analytics accounts associated with it. Either select a different account or associate a analytics account with this Google account</string>
     <string name="txtSave">Done</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_settings">Settings</string>
     <string name="network_not_connected">Network connection not available to refresh the account data</string>
     <string name="extension_title">DashAnalytics</string>
     <string name="extension_description">Display Google Analytics metric on Dashclock widget</string>
     <string name="title_display_format" formatted="false">%s %s: %s</string>
+    <string name="adsense_title_display_format" formatted="false">Earnings %s: %s</string>
+    <string name="adsense_attribute_display_format" formatted="false">%s: %s</string>
+    <string name="profile_display_format" formatted="false">Profile: %s (%s)</string>
+    <string name="adsense_attribute_display_format_withcurrency" formatted="false">%s: %s %s</string>
+    <string name="adsense_title_display_format_withcurrency" formatted="false">Earnings %s: %s %s</string>
+    <string name="adsense_status_display_format_withcurrency" formatted="false">%s %s</string>
     <string name="body_display_format" formatted="false">%s (%s)</string>
+    <string name="lastupdate_display_format" formatted="false">Updated: %s</string>
     <string name="dashanalytics_preferences">DashAnalytics Preferences</string>
+    <string name="dashadsense_preferences">DashAdSense Preferences</string>
     <string name="pref_select_period">Select Period</string>
     <string name="pref_select_period_desc">Select time period to query</string>
     <string name="pref_select_metric">Select Metric</string>
     <string name="pref_select_metric_desc">Select Metric to be displayed</string>
     <string name="pref_disp_lastupdatetime">Display Last Update time</string>
     <string name="pref_disp_lastupdatetime_desc">If Selected, displays the last successful update time</string>
-    
-        <string name="title_apps">Apps</string>
+    <string name="adsense_extension_description">Displays Google Adsense earnings on Dashclock widget</string>
+    <string name="pref_adsense_usetimezonee">Use Time zone reporting</string>
+    <string name="pref_adsense_usetimezonee_desc">Whether the earnings should be displayed in the AdSense account\'s local timezone. If false default PST timezone will be used</string>
+	<string name="pref_showcurrency">Show currency</string>
+	<string name="pref_showcurrency_desc">Show currency symbol against currencies</string>
+	<string name="pref_attributes">Select additional attributes to display</string>
+	
+	<string name="pref_showpageviews">Page Views</string>
+	<string name="pref_showpageviews_desc">The number of page views.</string>
+	
+	<string name="pref_showclicks">Clicks</string>
+	<string name="pref_showclicks_desc">The number of times a user clicked on a standard content ad</string>
+	
+	<string name="pref_showpagectr">Page CTR</string>
+	<string name="pref_showpagectr_desc">The ratio of individual page views that resulted in a click.</string>
+	
+	<string name="pref_showpagerpm">Page RPM</string>
+	<string name="pref_showpagerpm_desc">The revenue per thousand page views. This is calculated by dividing your estimated revenue by the number of page views multiplied by 1000.</string>
+	
+	<string name="pref_showcpc">Page CPC</string>
+	<string name="pref_showcpc_desc">The amount you earn each time a user clicks on your ad. CPC is calculated by dividing the estimated revenue by the number of clicks received.</string>
+	
+	 <string name="pref_shortcut_default">Default</string>
+	 
+	 <string name="pref_showvisits">Visits/Sessions</string>
+	 <string name="pref_showvisits_desc">Counts the total number of sessions</string>
+	 
+	 <string name="pref_showvisitors">Unique Visitors/Active Users</string>
+	 <string name="pref_showvisitors_desc">Total number of visitors to your property for the requested time period.</string>
+	 
+	 <string name="pref_shownewVisits">New Visits/New Users</string>
+	 <string name="pref_shownewVisits_desc">The number of visitors whose visit to your property was marked as a first-time visit.</string>
+	 
+	 <string name="pref_showpercentNewVisits" formatted="false"> % New Visits/% New Sessions</string>
+	 <string name="pref_showpercentNewVisits_desc"> The percentage of visits by people who had never visited your property before</string>
+	 
+	 <string name="pref_showvisitBounceRate">Bounce Rate</string>
+	 <string name="pref_showvisitBounceRate_desc">The percentage of single-page visits (i.e., visits in which the person left your property from the first page).</string>
+	 
+	 <string name="pref_showpageviewsPerVisit">Pages / Visit</string>
+	 <string name="pref_showpageviewsPerVisit_desc">The average number of pages viewed during a visit to your property. Repeated views of a single page are counted.</string>
+	 
+	 <string name="pref_showscreenviews">Screen Views</string>
+	 <string name="pref_showscreenviews_desc">The total number of screenviews.</string>
+	 
+	 <string name="pref_showuniqueScreenviews"> Unique Screen Views</string>
+	 <string name="pref_showuniqueScreenviews_desc">The number of different (unique) screenviews within a session.</string>
+	 
+	 <string name="pref_showscreenviewsPerSession">Screens / Session</string>
+	 <string name="pref_showscreenviewsPerSession_desc">The average number of screenviews per session.</string>
+	 
+	 <string name="pref_showlastupdate">Show Last Update Time</string>
+	 <string name="pref_showlastupdate_desc">Show Last Update Time</string>
+	 
+	  <string name="pref_analytics_showprofile">Show Profile Name</string>
+	  <string name="pref_analytics_showprofile_desc">Show Profile Name and Property</string>
+	  
+	  <string name="pref_goalcompletionsall">Goal Completions</string>
+	  <string name="pref_goalcompletionsall_desc">The total number of completions for all goals defined for your profile.</string>
+	  
+	  	  <string name="pref_goalconversionrateall">Goal Conversion Rate</string>
+	  <string name="pref_goalconversionrateall_desc">The percentage of visits which resulted in a conversion to at least one of your goals.</string>
+	  
+	  	  	  <string name="pref_goalvalueall">Goal Value</string>
+	  <string name="pref_goalvalueall_desc">The total numeric value for all goals defined for your profile.</string>
+	  
+	  
+	 
+	    <string name="click_behave_title">Click behavior</string>
+	      <string name="title_apps">Apps</string>
     <string name="title_shortcuts">Shortcuts</string>
-    <string name="pref_shortcut_default">Default</string>
-     <string name="click_behave_title">Click behavior</string>
-     <string name="pref_dash_pro">Get DashAnalytics Pro</string>
-     <string name="pref_dash_pro_desc">Get DashAnalytics Pro which includes several more features and an extension to display Google AdSense data - DashAdSense</string>
+    
+    <string name="pref_additional_attributes">Additional attributes</string>
+    <string name="pref_additional_attributes_desc">5 Additional attributes can be selected</string>
+    <string name="pref_additional_attributes_title">Select additional attributes to display</string>
+    
+    <string name="pref_core_attributes">Core attributes</string>
+    <string name="max_attributes_message">Up to 5 Additional attributes can be displayed</string>
+    <string name="str_add_account">Add Account</string>
+    <string name="str_visitor_metrics">Visitor Metrics</string>
+    <string name="str_session_metrics">Session Metrics</string>
+    <string name="str_page_tracking">Page Tracking</string>
+    <string name="str_app_tracking">App Tracking</string>
+    <string name="str_goal_conversions">Goal Conversions</string>
 
 </resources>

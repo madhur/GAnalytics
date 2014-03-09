@@ -1,23 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <PreferenceCategory android:title="@string/dashanalytics_preferences">
-        <ListPreference android:title="@string/pref_select_period" android:summary="@string/pref_select_period_desc" android:key="period_id" android:entries="@array/pref_period"  android:entryValues="@array/pref_period_values" android:defaultValue="today"> </ListPreference>
-        <ListPreference android:title="@string/pref_select_metric" android:summary="@string/pref_select_metric_desc" android:key="metric_id" android:entries="@array/pref_metric"  android:entryValues="@array/pref_metric_values" android:defaultValue="visits"></ListPreference>
-        
-        
-           <com.google.android.apps.dashclock.configuration.AppChooserPreference
+
+    <PreferenceCategory android:title="@string/dashanalytics_preferences" >
+        <ListPreference
+            android:defaultValue="today"
+            android:entries="@array/pref_period"
+            android:entryValues="@array/pref_period_values"
+            android:key="period_id"
+            android:summary="@string/pref_select_period_desc"
+            android:title="@string/pref_select_period" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="visits"
+            android:entries="@array/pref_metric"
+            android:entryValues="@array/pref_metric_values"
+            android:key="metric_id"
+            android:summary="@string/pref_select_metric_desc"
+            android:title="@string/pref_select_metric" >
+        </ListPreference>
+
+        <com.google.android.apps.dashclock.configuration.AppChooserPreference
             android:key="analytics_click_intent"
             android:title="@string/click_behave_title" />
-
-        <!-- <CheckBoxPreference android:title="@string/pref_disp_lastupdatetime" android:summary="@string/pref_disp_lastupdatetime_desc" android:key="pref_disp_lastupdatetime" android:defaultValue="false"/> -->
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/pref_dash_pro"></PreferenceCategory>
-    <Preference android:key="pref_dash_pro" android:title="@string/pref_dash_pro" android:summary="@string/pref_dash_pro_desc">
-        
-        
-    </Preference>
     
-<!--         <CheckBoxPreference android:title="@string/pref_disp_lastupdatetime" android:summary="@string/pref_disp_lastupdatetime_desc" android:key="pref_disp_lastupdatetime" android:defaultValue="false"/> -->
+    
+    
+    <PreferenceCategory
+        android:summary="@string/pref_additional_attributes"
+        android:title="@string/pref_additional_attributes" >
+        <PreferenceScreen
+            android:summary="@string/pref_additional_attributes_desc"
+            android:title="@string/pref_additional_attributes_title" >
+            <PreferenceCategory android:title="@string/pref_core_attributes" >
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="pref_analytics_showprofile"
+                    android:summary="@string/pref_analytics_showprofile_desc"
+                    android:title="@string/pref_analytics_showprofile" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_analytics_showlastupdate"
+                    android:summary="@string/pref_showlastupdate_desc"
+                    android:title="@string/pref_showlastupdate" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/str_visitor_metrics" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showvisitors"
+                    android:summary="@string/pref_showvisitors_desc"
+                    android:title="@string/pref_showvisitors" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_shownewVisits"
+                    android:summary="@string/pref_shownewVisits_desc"
+                    android:title="@string/pref_shownewVisits" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showpercentNewVisits"
+                    android:summary="@string/pref_showpercentNewVisits_desc"
+                    android:title="@string/pref_showpercentNewVisits" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/str_session_metrics" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showvisits"
+                    android:summary="@string/pref_showvisits_desc"
+                    android:title="@string/pref_showvisits" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showvisitBounceRate"
+                    android:summary="@string/pref_showvisitBounceRate_desc"
+                    android:title="@string/pref_showvisitBounceRate" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/str_page_tracking" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showpageviews"
+                    android:summary="@string/pref_showpageviews_desc"
+                    android:title="@string/pref_showpageviews" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showpageviewsPerVisit"
+                    android:summary="@string/pref_showpageviewsPerVisit_desc"
+                    android:title="@string/pref_showpageviewsPerVisit" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/str_app_tracking" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showscreenviews"
+                    android:summary="@string/pref_showscreenviews_desc"
+                    android:title="@string/pref_showscreenviews" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showuniqueScreenviews"
+                    android:summary="@string/pref_showuniqueScreenviews_desc"
+                    android:title="@string/pref_showuniqueScreenviews" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_showscreenviewsPerSession"
+                    android:summary="@string/pref_showscreenviewsPerSession_desc"
+                    android:title="@string/pref_showscreenviewsPerSession" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/str_goal_conversions" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_goalcompletionsall"
+                    android:summary="@string/pref_goalcompletionsall_desc"
+                    android:title="@string/pref_goalcompletionsall" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_goalconversionrateall"
+                    android:summary="@string/pref_goalconversionrateall_desc"
+                    android:title="@string/pref_goalconversionrateall" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="pref_goalvalueall"
+                    android:summary="@string/pref_goalvalueall_desc"
+                    android:title="@string/pref_goalvalueall" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    
 
 </PreferenceScreen>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string name="EARNINGS">Earnings</string>
+	 <string name="PAGE_VIEWS">Page Views</string>
+     <string name="CLICKS">Clicks</string>
+     <string name="PAGE_VIEWS_CTR">CTR</string>
+     <string name="PAGE_VIEWS_RPM">RPM</string>
+     <string name="COST_PER_CLICK">CPC</string>
+</resources>

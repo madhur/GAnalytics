@@ -1,46 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+      
     <string-array name="pref_period">
         <item>@string/today</item>
         <item>@string/yesterday</item>
+        <item>@string/lastweek</item>
+        <item>@string/lastmonth</item>
+        <item>@string/last30days</item>
+    </string-array>
+    
+     <string-array name="pref_adsense_period">
+        <item>@string/today</item>
+        <item>@string/yesterday</item>
+        <item>@string/thismonth</item>
+        <item>@string/lastmonth</item>
     </string-array>
 
-    <string-array name="pref_period_values">
+  
+    
+      <string-array name="pref_period_values">
         <item>today</item>
         <item>yesterday</item>
+        <item>lastweek</item>
+        <item>lastmonth</item>
+        <item>last30days</item>
     </string-array>
      
     <string-array name="pref_metric_values">
-        <item>visits</item>
-        <item>visitors</item>
-        <item>newVisits</item>
-        <item>percentNewVisits</item>
+        <item>ga_visits</item>
+        <item>ga_visitors</item>
+        <item>ga_newVisits</item>
+        <item>ga_percentNewVisits</item>
         
-        <item>pageviews</item>
-        <item>visitBounceRate</item>
-        <item>pageviewsPerVisit</item>
+        <item>ga_pageviews</item>
+        <item>ga_visitBounceRate</item>
+        <item>ga_pageviewsPerVisit</item>
         
-        <item>screenviews</item>
-        <item>uniqueScreenviews</item>
-        <item>screenviewsPerSession</item>
+        <item>ga_screenviews</item>
+        <item>ga_uniqueScreenviews</item>
+        <item>ga_screenviewsPerSession</item>
     </string-array>
     
         <string-array name="pref_metric">
-        <item>@string/visits</item>
-        <item>@string/visitors</item>
-        <item>@string/newVisits</item>
-        <item>@string/percentNewVisits</item>
+        <item>@string/ga_visits</item>
+        <item>@string/ga_visitors</item>
+        <item>@string/ga_newVisits</item>
+        <item>@string/ga_percentNewVisits</item>
         
-        <item>@string/pageviews</item>
-        <item>@string/visitBounceRate</item>
-        <item>@string/pageviewsPerVisit</item>
+        <item>@string/ga_pageviews</item>
+        <item>@string/ga_visitBounceRate</item>
+        <item>@string/ga_pageviewsPerVisit</item>
         
-         <item>@string/screenviews</item>
-        <item>@string/uniqueScreenviews</item>
-        <item>@string/screenviewsPerSession</item>
+         <item>@string/ga_screenviews</item>
+        <item>@string/ga_uniqueScreenviews</item>
+        <item>@string/ga_screenviewsPerSession</item>
     </string-array>
     
+
 
     
 

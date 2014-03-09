@@ -1,5 +1,6 @@
 package in.co.madhur.ganalyticsdashclock;
 
+import in.co.madhur.ganalyticsdashclock.Consts.ANALYTICS_METRICS;
 import in.co.madhur.ganalyticsdashclock.API.GNewProfile;
 
 import java.io.IOException;
@@ -16,11 +17,19 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-public class AppPreferences
+public  class AppPreferences
 {
 
 	public SharedPreferences sharedPreferences;
-	Context context;
+	protected Context context;
+	
+	public AppPreferences(Context context)
+	{
+		this.context = context;
+		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		
+	}
+	
 
 	public enum Keys
 	{
@@ -35,8 +44,14 @@ public class AppPreferences
 		PROFILE_NAME("profile_name"),
 		METRIC_ID("metric_id"),
 		PERIOD_ID("period_id"),
+		ADSENSE_PERIOD_ID("adsense_period_id"),
+		USE_LOCAL_TIME("pref_adsense_usetimezonee"),
+		SHOW_CURRENCY("pref_showcurrency"),
+		ADSENSE_CLICK_INTENT("adsense_click_intent"),
 		ANALYTICS_CLICK_INTENT("analytics_click_intent"),
-		DASH_PRO("pref_dash_pro"),
+		SHOW_PROFILE("pref_analytics_showprofile"),
+		SHOW_ADSENSE_LASTUPDATE("pref_adsense_showlastupdate"),
+		SHOW_ANALYTICS_LASTUPDATE("pref_analytics_showlastupdate"),
 		AUTH_TOKEN("pref_auth_token");
 
 		public final String key;
@@ -48,11 +63,41 @@ public class AppPreferences
 		}
 
 	};
+	
 
-	public AppPreferences(Context context)
+	
+	public enum ANALYTICS_KEYS 
 	{
-		this.context = context;
-		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		SHOW_VISITORS("pref_showvisitors", ANALYTICS_METRICS.VISITORS),
+		SHOW_NEW_VISITS("pref_shownewVisits", ANALYTICS_METRICS.NEW_VISITS),
+		SHOW_PERCENT_NEWVISITS("pref_showpercentNewVisits", ANALYTICS_METRICS.PERCENT_NEW_VISITS),
+		SHOW_VISITS("pref_showvisits", ANALYTICS_METRICS.VISITS),
+		SHOW_BOUNCERATE("pref_showvisitBounceRate", ANALYTICS_METRICS.BOUNCE_RATE),
+		SHOW_PAGEVIEWS("pref_showpageviews", ANALYTICS_METRICS.PAGE_VIEWS),
+		SHOW_PAGEVIEWS_PERVISIT("pref_showpageviewsPerVisit", ANALYTICS_METRICS.PAGE_VIEWS_PER_VISIT),
+		SHOW_SCREEN_VIEWS("pref_showscreenviews", ANALYTICS_METRICS.SCREEN_VIEWS),
+		SHOW_UNIQUE_SCREENVIEWS("pref_showuniqueScreenviews", ANALYTICS_METRICS.UNIQUE_SCREEN_VIEWS),
+		SHOW_SCREENVIEWS_PERSESSION("pref_showscreenviewsPerSession", ANALYTICS_METRICS.SCREEN_VIEWS_PER_SESSION),
+		SHOW_GOAL_COMPLETIONS("pref_goalcompletionsall", ANALYTICS_METRICS.GOAL_COMPLETIONS_ALL),
+		SHOW_GOAL_VALUE("pref_goalvalueall",ANALYTICS_METRICS.GOAL_VALUE),
+		SHOW_GOAL_CONVERSIONRATE("pref_goalconversionrateall", ANALYTICS_METRICS.GOAL_CONVERSIONRATE_ALL);
+		
+		public final String key;
+		public final String metric;
+
+		private ANALYTICS_KEYS(String key, ANALYTICS_METRICS metric)
+		{
+			this.key = key;
+			this.metric=metric.toString();
+
+		}
+		
+		public String getMetric()
+		{
+			
+			return metric;
+		}
+	
 	}
 
 	public void setAuthToken(String token)
@@ -106,6 +151,45 @@ public class AppPreferences
 		return gAccounts;
 
 	}
+	
+	public boolean getboolMetaData(Keys key)
+	{
+		boolean defValue=false;
+		
+		return sharedPreferences.getBoolean(key.key, defValue);
+	}
+	
+	public boolean getboolMetaDataStr(String key)
+	{
+		boolean defValue=false;
+		
+		return sharedPreferences.getBoolean(key, defValue);
+	}
+	
+	
+	public boolean getAnalyticProperty(ANALYTICS_KEYS key)
+	{
+		boolean defValue=false;
+		
+		return sharedPreferences.getBoolean(key.key, defValue);
+	}
+	
+	
+	
+	
+	
+	public boolean isLocalTime()
+	{
+		return sharedPreferences.getBoolean(Keys.USE_LOCAL_TIME.key, true);
+	}
+	
+	public boolean isShowcurrency()
+	{
+		return sharedPreferences.getBoolean(Keys.SHOW_CURRENCY.key, true);
+		
+	}
+	
+	
 
 	public void setMetadata(Keys key, String value)
 	{
@@ -148,6 +232,8 @@ public class AppPreferences
 			defValue = Defaults.METRIC_ID;
 		else if (key == Keys.PERIOD_ID)
 			defValue = Defaults.PERIOD_ID;
+		else if (key==Keys.ADSENSE_PERIOD_ID)
+			defValue=Defaults.PERIOD_ID;
 
 		return sharedPreferences.getString(key.key, defValue);
 	}
@@ -157,6 +243,16 @@ public class AppPreferences
 
 		return sharedPreferences.getString(Keys.USER_NAME.key, "");
 
+	}
+
+	public void setMetadataMultiple(String accountId, String accountName, String accountEmail)
+	{
+		Editor editor = sharedPreferences.edit();
+		editor.putString(Keys.ACCOUNT_ID.key, accountId);
+		editor.putString(Keys.ACCOUNT_NAME.key, accountName);
+		editor.putString(Keys.USER_NAME.key, accountEmail);
+		editor.commit();
+		
 	}
 
 }
