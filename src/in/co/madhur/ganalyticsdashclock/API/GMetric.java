@@ -2,7 +2,7 @@ package in.co.madhur.ganalyticsdashclock.API;
 
 import android.util.Log;
 import in.co.madhur.ganalyticsdashclock.Consts;
-import in.co.madhur.ganalyticsdashclock.Consts.APIMetrics;
+import in.co.madhur.ganalyticsdashclock.Consts.ANALYTICS_METRICS;
 
 public class GMetric extends GType
 {
@@ -17,10 +17,9 @@ public class GMetric extends GType
 		super(Id, Name);
 	}
 	
-	public GMetric(APIMetrics Id, String Name)
+	public GMetric(ANALYTICS_METRICS Id, String Name)
 	{
 		super(Id.toString(), Name);
-		Log.v("TAG", Id.toString());
 	}
 	
 	@Override

@@ -11,7 +11,7 @@
             android:title="@string/pref_select_period" >
         </ListPreference>
         <ListPreference
-            android:defaultValue="visits"
+            android:defaultValue="ga_visits"
             android:entries="@array/pref_metric"
             android:entryValues="@array/pref_metric_values"
             android:key="metric_id"
