@@ -1,22 +1,10 @@
 package in.co.madhur.ganalyticsdashclock;
 
-import com.google.android.apps.dashclock.configuration.AppChooserPreference;
-
 import in.co.madhur.ganalyticsdashclock.AppPreferences.ANALYTICS_KEYS;
 import in.co.madhur.ganalyticsdashclock.AppPreferences.Keys;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.text.TextUtils;
-import android.view.MenuItem;
 
 public class DashAnalyticsPreferenceActivity extends BasePreferenceActivity
 {

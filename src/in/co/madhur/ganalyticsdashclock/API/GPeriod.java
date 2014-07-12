@@ -1,6 +1,5 @@
 package in.co.madhur.ganalyticsdashclock.API;
 
-import in.co.madhur.ganalyticsdashclock.Consts;
 import in.co.madhur.ganalyticsdashclock.Consts.APIPeriod;
 
 public class GPeriod extends GType

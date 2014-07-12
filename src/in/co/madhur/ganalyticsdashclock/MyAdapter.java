@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class MyAdapter extends BaseAdapter
@@ -21,9 +20,6 @@ public class MyAdapter extends BaseAdapter
 	{
 		this.items=items;
 		this.context=context;
-		
-		
-		
 	}
 
 	@Override

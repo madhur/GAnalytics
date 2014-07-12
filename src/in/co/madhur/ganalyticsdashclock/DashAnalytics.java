@@ -1,7 +1,5 @@
 package in.co.madhur.ganalyticsdashclock;
 
-import java.net.UnknownHostException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +27,6 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
-import com.google.api.services.analytics.Analytics.Data.Ga.Get;
 import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.GaData.ColumnHeaders;

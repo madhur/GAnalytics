@@ -9,7 +9,6 @@ import com.google.android.apps.dashclock.configuration.AppChooserPreference;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
