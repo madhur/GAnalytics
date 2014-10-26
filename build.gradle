@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.4+'
+        classpath 'com.android.tools.build:gradle:0.13.2'
         
     }
 }
@@ -15,17 +15,33 @@ repositories {
     mavenCentral()
 }
 
+	android {
+	  packagingOptions {
+	    exclude 'META-INF/LICENSE'
+	    exclude 'META-INF/NOTICE'
+	    
+	  }
+	}
+	
+	android {
+      lintOptions {
+          abortOnError false
+      }
+  }
+	
+
+
 
 android {
-    buildToolsVersion "17.0"
-    compileSdkVersion 18
+    buildToolsVersion "21.0.2"
+    compileSdkVersion 21
     
      sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
             resources.srcDirs = ['src']
-            aild.srcDirs = ['src']
+          
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
@@ -77,12 +93,6 @@ dependencies {
     
 } 
 
-subprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(Compile) {
-            options.compilerArgs << "-Xlint:deprecation"
-        }
-    }
-}
+
 
 
